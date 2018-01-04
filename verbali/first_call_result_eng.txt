@@ -1,0 +1,120 @@
+############################################
+## Index
+
+0. Inspirations
+1. Users
+2. Features
+3. Authentication
+4. Interfaces
+5. Todo, Deadline & Next Call
+6. Credits
+
+
+############################################
+## 0. Inspirations
+
+App from which to take inspiration from: 
+- https://www.municipiumapp.it/web/
+- https://play.google.com/store/apps/details?id=com.MilanoSM&hl=it
+- https://comuni-chiamo.com/
+- http://www.incomune.info/
+- http://www.comune.modena.it/il-comune/le-app-del-comune-di-modena
+- http://www.comuneapp.it/
+
+
+############################################
+## 1. Users
+
+There are two kind of users for this app:
+- Municipal employee (from now on, referred to as Municipality).
+- Citizen (from now on, referred to as Citizen).
+
+The Municipality will be able to add new data, like: news for the citizens (NEWS), points of interest (POI). Also, it will be able to choose whether or not to publish the messages received from the Citizens.
+
+The Citizen will be able to see the NEWS and POIs published by the Municipality. Also, if authenticated, he will be able to send messages to the Municipality.
+
+
+############################################
+## 2. Features (Ordered by priority of implementation)
+
+2.1. List news and events from the Municipality.
+The citizen will be able to see a list of all the news and events published by the Municipality.
+
+2.2. Add news and events from the Municipality. (Authentication required - Municipality)
+The Municipality will be able to add news and events to show to the citizens. There will be three main fields (mandatory) and one onptional:
+	- Title
+	- Body
+	- Category
+	- Tags (optional)
+
+2.3. Messages from the citizen. (Authentication required - Citizen)
+The Citizen will be able to send messages to the Municipality. There will be a main field (mandatory) and two optional:
+	- Body of the message
+	- Category (optional)
+	- Attachments (optional). For example images
+
+2.4. Publish messages from the citizen. (Authentication required - Municipality)
+The Municipality will be able to choose whether or not to publish a message received from the citizen. In this case, the message, will be public for everyone to see (in the same list as the news and events published by the Municipality? In a second list reserved for this kind of messages?).
+It will be possible to keep track of the progress made with the message (with a red-yellow-green circle?)
+
+2.5. Show POIs on maps.
+The citizen will be able to see the POIs of his city on a map. (Maybe, also, show the details related to a POI that has been clicked on in a separate view).
+
+2.6. Add POI. (Authentication required - Municipality)
+The Municipality will be able to add POIs.
+There will be two main fields (mandatory) and one optional:
+	- POI's name
+	- POI's description
+	- Images (optional)
+
+2.7. Suggestion of POIs. (Authentication required - Citizen)
+The Citizen will be able to suggest new POIs or edits to already available ones, that will have to be accepted by the Municipality before becoming publicly available.
+There will be two main fields (mandatory) and one optional:
+	- POI's name
+	- POI's description
+	- Images (optional)
+Think about the option to use the same "levels principle" used by Google with Local Guides to give more/less options to the citizen.
+
+2.8. Accept new/edit to POIs. (Authentication required - Municipality)
+The Municiaplity will be able to accept the new / edits to POIs suggested by the Citizen.
+
+2.9. Subscription of notification "channels".
+The user will be able to choose the "notification channels" to subscribe to. (Even if it's not Android Oreo)
+
+
+############################################
+## 3. Authentication
+
+There will be two access modes: Citizen, Municipality.
+
+Also, the citizen will be able to use the app without the need to authenticate, but he/she won't be able to use all the features.
+
+
+############################################
+## 4. Interfaces
+
+The Municipality will have access, mainly, to a web interface. Also, consider an APP interface to allow a Municipality Employee walking out in the city, to update data.
+
+Grant, in some way and to some degree, the identity of the citizen that logs-in.
+
+
+############################################
+## 5. Todo, Deadline & Next Call
+
+The next deadline is set for the 04-01-2018.
+For that deadline prepare a storyboard for the features here listed.
+
+The 03-01-2018 at 09.15 pm there will be a call to talk about the progress made.
+
+
+############################################
+## 6. Credits
+
+Stefano Bozzoni: stefano.bozzoni@gmail.com
+Loredana Coda: loredana.coda@gmail.com 
+Gregorio Palamà: gregoriopalama@gmail.com
+Elia Maracani: elia.maracani@gmail.com
+Oliver Tranchesi: olivier.tra@gmail.com
+Giovanni Fioretti: giannifio93@gmail.com
+Vitiello Antonio: vitiello.antonio@gmail.com
+Luca Uburti: luca.uburti@gmail.com

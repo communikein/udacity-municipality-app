@@ -1,0 +1,126 @@
+############################################
+## Indice
+
+0. Spunti
+1. Utenti
+2. Funzionalità
+3. Autenticazione
+4. Interfacce
+5. Todo
+6. Deadline e prossima call
+7. Credits
+
+
+############################################
+## 0. Spunti
+
+App da cui prendere spunto come punto di partenza: 
+- https://www.municipiumapp.it/web/
+- https://play.google.com/store/apps/details?id=com.MilanoSM&hl=it
+- https://comuni-chiamo.com/
+- http://www.incomune.info/
+- http://www.comune.modena.it/il-comune/le-app-del-comune-di-modena
+- http://www.comuneapp.it/
+
+
+############################################
+## 1. Utenti
+
+Le tipologie di utenzi pensate per quest'app sono due:
+- Dipendente comunale (da qui in poi riferito come COMUNE).
+- Cittadino (da qui in poi riferito come CITTADINO).
+
+Il COMUNE può inserire dati quali: avvisi ai cittadini (AVVISI), punti di interesse (POI). Inoltre, potrà valutare se rendere pubblici o meno gli avvisi ricevuti dai CITTADINI.
+
+Il CITTADINO può visualizzare gli AVVISI ed i POI pubblicati dal COMUNE. Inoltre, se autenticato, potrà inviare avvisi al COMUNE.
+
+
+############################################
+## 2. Funzionalità (Ordinate per importanza)
+
+2.1. Visualizzazione news ed eventi dal comune.
+Il cittadino può vedere una lista di news ed eventi pubblicati dal COMUNE.
+
+2.2. Aggiunta news ed eventi dal comune. (Autenticazione richiesta - COMUNE)
+Il COMUNE inserisce le news che vuole comunicare al CITTADINO. 
+Saranno presenti tre campi principali (obbligatori) ed uno facoltativo:
+	- Titolo
+	- Corpo
+	- Categoria
+	- TAGS (facoltativo)
+
+2.3. News Avvisi dal cittadino. (Autenticazione richiesta - CITTADINO)
+Il CITTADINO può inviare messaggi al COMUNE in una delle seguenti modalità:
+	- Messaggio libero. L'utente inserisce il corpo del messaggio e lo invia.
+	- Messaggio categorizzato. L'utente inserisce il corpo del messaggio e selezione un argomento da una lista. 
+In entrambi i casi il cittadino può decidere di allegare foto al messaggio.
+
+2.4. Visualizzazione punti di interesse (POI) su mappe.
+Il cittadino potrà vedere su una mappa i punti di interesse nella sua città.
+Eventualmente valutare una schermata con i dettagli del punto di interesse selezionato.
+
+2.5. Pubblicazione avvisi del CITTADINO. (Autenticazione richiesta - CITTADINO)
+Il COMUNE può decidere di rendere pubblico un avviso ricevuto dal CITTADINO. In questo caso, l'avviso, sarà visibile da tutti (Nella stessa lista degli avvisi forniti dal COMUNE? In una lista separata riservata agli avvisi dei CITTADINI approvati dal COMUNE?).
+Si terrà inoltre traccia del progresso riguardante l'avviso (tramite un pallino rosso-giallo-verde ?).
+
+2.6. Aggiunta POI dal Comune. (Autenticazione richiesta - COMUNE)
+Il COMUNE può aggiungere punti di interesse. 
+Saranno presenti due campi principali (obbligatori) ed uno facoltativo:
+	- Nome POI
+	- Descrizione POI
+	- Immagini (facoltativo)
+
+2.7. Proposta POI dal cittadino. (Autenticazione richiesta - CITTADINO)
+Il CITTADINO può proporre POI, che dovranno essere accettati dal COMUNE prima di poter diventare pubblici.
+Saranno presenti due campi principali (obbligatori) ed uno facoltativo:
+	- Nome POI
+	- Descrizione POI
+	- Immagini (facoltativo)
+Valutare la possibilità di "assegnare livelli" ai cittadini "alla google maps - guide locali".
+
+2.8. Conferma POI dal Comune. (Autenticazione richiesta - COMUNE)
+Il COMUNE può confermare le modifiche / aggiunte di POI suggerite dal CITTADINO.
+
+2.9. Selezione "channel" delle notifiche ricevute.
+Permettere all'utente di selezionare quali canali sottoscrivere per la ricezione delle notifiche.
+
+
+############################################
+## 3. Autenticazione
+
+Due modalità di accesso all'applicazione: CITTADINO, COMUNE.
+
+Il CITTADINO può utilizzare l'app senza autenticazione, ma non potrà utilizzare alcune funzionalità.
+
+
+############################################
+## 4. Interfacce
+
+Il COMUNE avrà accesso, principalmente, ad una interfaccia lato web tramite la quale inserire i dati rilevanti il proprio comune (punti di interesse, raccolta rifiuti, notifiche di protezione civile, ...). Valutare anche un'interfaccia app per permettere ad un eventuale dipendente comunale "fuori per strada" di aggiornare dati.
+
+Garantire in qualche modo (o provarci) l'identità di chi si logga.
+
+
+############################################
+## 5. Todo
+
+Pensare e proporre una storyboard per queste funzionalità pensate.
+
+
+############################################
+## 6. Deadline e prossima call
+
+Deadline e call fissate per il 03-01-2018 alle 21.15
+
+
+############################################
+## 7. Credits
+
+Stefano Bozzoni: stefano.bozzoni@gmail.com
+Loredana Coda: loredana.coda@gmail.com 
+Gregorio Palamà: gregoriopalama@gmail.com
+Elia Maracani: elia.maracani@gmail.com
+Oliver Tranchesi: olivier.tra@gmail.com
+Giovanni Fioretti: giannifio93@gmail.com
+Vitiello Antonio: vitiello.antonio@gmail.com
+Luca Uburti: luca.uburti@gmail.com
