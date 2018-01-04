@@ -9,5 +9,5 @@ Link utili:
 <ul>
   <li>Link alla cartella di <a href="https://drive.google.com/drive/folders/1oIT6jP9hOC0OMYAxS77N0TzA9AoT7cWp">Google Drive</a> contenente tutti i documenti condivisi.</li>
   <li>Link per un corso veloce (1-2 giorni) per un ripasso delle basi necessarie per lavorare con git su <a href="https://classroom.udacity.com/courses/ud775">Udacity.com</a></li>
-  <li>Link con la <a href="https://trello.com/">lista delle cose da fare</a></li>
+  <li>Link con la lista delle cose da fare su <a href="https://trello.com/">trello.com</a></li>
 </ul>
