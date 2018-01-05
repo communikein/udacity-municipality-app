@@ -25,11 +25,11 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     mBinding.message.setText(R.string.title_home);
                     return true;
-                case R.id.navigation_dashboard:
-                    mBinding.message.setText(R.string.title_dashboard);
+                case R.id.navigation_news_and_events:
+                    mBinding.message.setText(R.string.title_news_and_events);
                     return true;
-                case R.id.navigation_notifications:
-                    mBinding.message.setText(R.string.title_notifications);
+                case R.id.navigation_pois:
+                    mBinding.message.setText(R.string.title_pois);
                     return true;
             }
             return false;
@@ -41,7 +41,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        mBinding.navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        if (mBinding != null) {
+            mBinding.navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        }
     }
 
 }
