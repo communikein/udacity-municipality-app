@@ -22,7 +22,7 @@ public interface NewsDao {
     @Query("DELETE FROM news")
     void deleteAllNews();
 
-    @Query("DELETE FROM news WHERE web_id = :webId")
+    @Query("DELETE FROM news WHERE webId = :webId")
     void deleteSingleNews(int webId);
 
     @Query("SELECT * FROM news")
@@ -31,13 +31,13 @@ public interface NewsDao {
     @Query("SELECT * FROM news")
     List<News> getAllNews();
 
-    @Query("SELECT * FROM news WHERE web_id = :webId")
+    @Query("SELECT * FROM news WHERE webId = :webId")
     News getSingleNews(int webId);
 
-    @Query("SELECT * FROM news WHERE web_id = :webId")
+    @Query("SELECT * FROM news WHERE webId = :webId")
     LiveData<News> getObservableSingleNews(int webId);
 
-    @Query("SELECT COUNT(web_id) FROM news")
+    @Query("SELECT COUNT(webId) FROM news")
     int getNewsSize();
 
     @Update

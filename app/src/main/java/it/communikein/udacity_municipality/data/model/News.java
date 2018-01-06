@@ -18,15 +18,15 @@ public class News {
     @Ignore private static final String ARG_TIMESTAMP = "arg_timestamp";
 
     @PrimaryKey
-    @ColumnInfo(name = "db_id") private int mDatabaseId;
-    @ColumnInfo(name = "web_id") private int mWebId;
-    @ColumnInfo(name = "title") private String mTitle;
-    @ColumnInfo(name = "description") private String mDescription;
-    @ColumnInfo(name = "timestamp") private long mTimestamp;
+    private int databaseId;
+    private int webId;
+    private String title;
+    private String description;
+    private long timestamp;
 
 
-    public News(int dbId, int webId, String title, String description, long timestamp) {
-        setDatabaseId(dbId);
+    public News(int databaseId, int webId, String title, String description, long timestamp) {
+        setDatabaseId(databaseId);
         setWebId(webId);
         setTitle(title);
         setDescription(description);
@@ -48,42 +48,43 @@ public class News {
     }
 
 
-    public int getWebId() { return this.mWebId; }
+
+    public int getWebId() { return this.webId; }
 
     public void setWebId(int webId) {
-        this.mWebId = webId;
+        this.webId = webId;
     }
 
-    public int getDatabseId() {
-        return mDatabaseId;
+    public int getDatabaseId() {
+        return databaseId;
     }
 
-    public void setDatabaseId(int id) {
-        this.mDatabaseId = id;
+    public void setDatabaseId(int databaseId) {
+        this.databaseId = databaseId;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public void setTitle(String title) {
-        this.mTitle = title;
+        this.title = title;
     }
 
     public String getDescription() {
-        return mDescription;
+        return description;
     }
 
     public void setDescription(String description) {
-        this.mDescription = description;
+        this.description = description;
     }
 
     public long getTimestamp() {
-        return mTimestamp;
+        return timestamp;
     }
 
     public void setTimestamp(long timestamp) {
-        this.mTimestamp = timestamp;
+        this.timestamp = timestamp;
     }
 
 
@@ -92,7 +93,7 @@ public class News {
         JSONObject obj = new JSONObject();
 
         try {
-            obj.put(ARG_DATABASE_ID, getDatabseId());
+            obj.put(ARG_DATABASE_ID, getDatabaseId());
             obj.put(ARG_WEB_ID, getWebId());
             obj.put(ARG_TITLE, getTitle());
             obj.put(ARG_DESCRIPTION, getDescription());

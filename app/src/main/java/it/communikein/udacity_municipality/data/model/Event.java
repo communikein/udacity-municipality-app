@@ -15,19 +15,19 @@ public class Event extends News {
     @Ignore private static final String ARG_LOCATION_LAT = "arg-location-lat";
     @Ignore private static final String ARG_LOCATION_LNG = "arg-location-lng";
 
-    @ColumnInfo(name = "date_start") private long mDateStart;
-    @ColumnInfo(name = "date_end") private long mDateEnd;
-    @ColumnInfo(name = "location_lat") private long mLocationLat;
-    @ColumnInfo(name = "location_lng") private long mLocationLng;
+    private long dateStart;
+    private long dateEnd;
+    private long locationLat;
+    private long locationLng;
 
-    public Event(int dbId, int webId, String title, String description, long timestamp, long dateStart,
-                 long dateEnd, long lat, long lng) {
-        super(dbId, webId, title, description, timestamp);
+    public Event(int databaseId, int webId, String title, String description, long timestamp,
+                 long dateStart, long dateEnd, long locationLat, long locationLng) {
+        super(databaseId, webId, title, description, timestamp);
 
         setDateStart(dateStart);
         setDateEnd(dateEnd);
-        setLocationLat(lat);
-        setLocationLng(lng);
+        setLocationLat(locationLat);
+        setLocationLng(locationLng);
     }
 
     @Ignore
@@ -46,35 +46,35 @@ public class Event extends News {
 
 
     public long getDateStart() {
-        return mDateStart;
+        return dateStart;
     }
 
     public void setDateStart(long dateStart) {
-        this.mDateStart = dateStart;
+        this.dateStart = dateStart;
     }
 
     public long getDateEnd() {
-        return mDateEnd;
+        return dateEnd;
     }
 
     public void setDateEnd(long dateEnd) {
-        this.mDateEnd = dateEnd;
+        this.dateEnd = dateEnd;
     }
 
     public long getLocationLat() {
-        return mLocationLat;
+        return locationLat;
     }
 
     public void setLocationLat(long locationLat) {
-        this.mLocationLat = locationLat;
+        this.locationLat = locationLat;
     }
 
     public long getLocationLng() {
-        return mLocationLng;
+        return locationLng;
     }
 
     public void setLocationLng(long locationLng) {
-        this.mLocationLng = locationLng;
+        this.locationLng = locationLng;
     }
 
 

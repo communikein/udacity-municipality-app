@@ -22,7 +22,7 @@ public interface EventDao {
     @Query("DELETE FROM events")
     void deleteAllEvents();
 
-    @Query("DELETE FROM events WHERE web_id = :webId")
+    @Query("DELETE FROM events WHERE webId = :webId")
     void deleteSingleEvent(int webId);
 
     @Query("SELECT * FROM events")
@@ -31,13 +31,13 @@ public interface EventDao {
     @Query("SELECT * FROM events")
     List<Event> getAllEvents();
 
-    @Query("SELECT * FROM events WHERE web_id = :webId")
+    @Query("SELECT * FROM events WHERE webId = :webId")
     Event getSingleEvent(int webId);
 
-    @Query("SELECT * FROM events WHERE web_id = :webId")
+    @Query("SELECT * FROM events WHERE webId = :webId")
     LiveData<Event> getObservableSingleEvent(int webId);
 
-    @Query("SELECT COUNT(web_id) FROM events")
+    @Query("SELECT COUNT(webId) FROM events")
     int getEventsSize();
 
     @Update
