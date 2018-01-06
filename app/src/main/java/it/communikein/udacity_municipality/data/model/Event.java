@@ -1,28 +1,23 @@
 package it.communikein.udacity_municipality.data.model;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@Entity(tableName = "events")
 public class Event extends News {
 
-    @Ignore private static final String ARG_DATE_START = "arg-date-start";
-    @Ignore private static final String ARG_DATE_END = "arg-date-end";
-    @Ignore private static final String ARG_LOCATION_LAT = "arg-location-lat";
-    @Ignore private static final String ARG_LOCATION_LNG = "arg-location-lng";
+    private static final String ARG_DATE_START = "arg-date-start";
+    private static final String ARG_DATE_END = "arg-date-end";
+    private static final String ARG_LOCATION_LAT = "arg-location-lat";
+    private static final String ARG_LOCATION_LNG = "arg-location-lng";
 
     private long dateStart;
     private long dateEnd;
     private long locationLat;
     private long locationLng;
 
-    public Event(int databaseId, int webId, String title, String description, long timestamp,
+    public Event(String id, String title, String description, long timestamp,
                  long dateStart, long dateEnd, long locationLat, long locationLng) {
-        super(databaseId, webId, title, description, timestamp);
+        super(id, title, description, timestamp);
 
         setDateStart(dateStart);
         setDateEnd(dateEnd);
@@ -30,7 +25,6 @@ public class Event extends News {
         setLocationLng(locationLng);
     }
 
-    @Ignore
     public Event(JSONObject json) throws JSONException {
         super(json);
 
@@ -78,7 +72,6 @@ public class Event extends News {
     }
 
 
-    @Ignore
     public JSONObject toJSON() {
         JSONObject obj = super.toJSON();
 
@@ -94,23 +87,20 @@ public class Event extends News {
         return obj;
     }
 
-    @Ignore
     @Override
     public String toString() {
         return toJSON().toString();
     }
 
 
-    @Ignore
     @Override
     public boolean equals(Object obj) {
         if (! (obj instanceof Event)) return false;
 
         Event event = (Event) obj;
-        return event.getWebId() == this.getWebId();
+        return event.getId().equals(this.getId());
     }
 
-    @Ignore
     public boolean displayEquals(Object obj) {
         if (! super.displayEquals(obj)) return false;
 

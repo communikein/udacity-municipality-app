@@ -1,44 +1,37 @@
 package it.communikein.udacity_municipality.data.model;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@Entity(tableName = "news")
+import java.util.Date;
+import java.util.Map;
+
 public class News {
 
-    @Ignore private static final String ARG_DATABASE_ID = "arg-database-id";
-    @Ignore private static final String ARG_WEB_ID = "arg-web-id";
-    @Ignore private static final String ARG_TITLE = "arg_title";
-    @Ignore private static final String ARG_DESCRIPTION = "arg_body";
-    @Ignore private static final String ARG_TIMESTAMP = "arg_timestamp";
+    private static final String ARG_ID = "id";
+    private static final String ARG_TITLE = "title";
+    private static final String ARG_DESCRIPTION = "description";
+    private static final String ARG_TIMESTAMP = "timestamp";
 
-    @PrimaryKey
-    private int databaseId;
-    private int webId;
+    @NonNull
+    private String id;
     private String title;
     private String description;
     private long timestamp;
 
 
-    public News(int databaseId, int webId, String title, String description, long timestamp) {
-        setDatabaseId(databaseId);
-        setWebId(webId);
+    public News(@NonNull String id, String title, String description, long timestamp) {
+        setId(id);
         setTitle(title);
         setDescription(description);
         setTimestamp(timestamp);
     }
 
-    @Ignore
     public News(JSONObject json) throws JSONException {
-        if (json.has(ARG_DATABASE_ID))
-            setDatabaseId(json.getInt(ARG_DATABASE_ID));
-        if (json.has(ARG_WEB_ID))
-            setWebId(json.getInt(ARG_WEB_ID));
+        if (json.has(ARG_ID))
+            setId(json.getString(ARG_ID));
         if (json.has(ARG_TITLE))
             setTitle(json.getString(ARG_TITLE));
         if (json.has(ARG_DESCRIPTION))
@@ -47,20 +40,25 @@ public class News {
             setTimestamp(json.getLong(ARG_TIMESTAMP));
     }
 
+    public News(String id, Map<String, Object> map) {
+        setId(id);
 
-
-    public int getWebId() { return this.webId; }
-
-    public void setWebId(int webId) {
-        this.webId = webId;
+        if (map.containsKey(ARG_TITLE))
+            setTitle((String) map.get(ARG_TITLE));
+        if (map.containsKey(ARG_DESCRIPTION))
+            setDescription((String) map.get(ARG_DESCRIPTION));
+        if (map.containsKey(ARG_TIMESTAMP))
+            setTimestamp(((Date) map.get(ARG_TIMESTAMP)).getTime());
     }
 
-    public int getDatabaseId() {
-        return databaseId;
+
+
+    public String getId() {
+        return id;
     }
 
-    public void setDatabaseId(int databaseId) {
-        this.databaseId = databaseId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -88,13 +86,11 @@ public class News {
     }
 
 
-    @Ignore
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
 
         try {
-            obj.put(ARG_DATABASE_ID, getDatabaseId());
-            obj.put(ARG_WEB_ID, getWebId());
+            obj.put(ARG_ID, getId());
             obj.put(ARG_TITLE, getTitle());
             obj.put(ARG_DESCRIPTION, getDescription());
             obj.put(ARG_TIMESTAMP, getTimestamp());
@@ -105,23 +101,20 @@ public class News {
         return obj;
     }
 
-    @Ignore
     @Override
     public String toString() {
         return toJSON().toString();
     }
 
 
-    @Ignore
     @Override
     public boolean equals(Object obj) {
         if (! (obj instanceof News)) return false;
 
         News news = (News) obj;
-        return news.getWebId() == this.getWebId();
+        return news.getId().equals(this.getId());
     }
 
-    @Ignore
     public boolean displayEquals(Object obj) {
         if (! (obj instanceof News)) return false;
 

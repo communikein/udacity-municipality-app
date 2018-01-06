@@ -10,6 +10,7 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.HasServiceInjector;
+import it.communikein.udacity_municipality.di.DaggerComunicappComponent;
 
 public class ComunicApp extends Application implements HasActivityInjector, HasServiceInjector {
 
@@ -23,13 +24,11 @@ public class ComunicApp extends Application implements HasActivityInjector, HasS
     public void onCreate() {
         super.onCreate();
 
-        /*
-        DaggerAppComponent
+        DaggerComunicappComponent
                 .builder()
                 .application(this)
                 .build()
                 .inject(this);
-        */
     }
 
     @Override
