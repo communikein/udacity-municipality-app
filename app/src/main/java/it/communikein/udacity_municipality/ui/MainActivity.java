@@ -1,14 +1,17 @@
 package it.communikein.udacity_municipality.ui;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import it.communikein.udacity_municipality.R;
+import it.communikein.udacity_municipality.data.login.LoginFirebase;
 import it.communikein.udacity_municipality.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    /** Called when the user taps the Login button */
+    public void startLogin(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, LoginFirebase.class);
+        startActivity(intent);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
