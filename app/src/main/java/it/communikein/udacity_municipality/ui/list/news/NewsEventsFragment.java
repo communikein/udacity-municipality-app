@@ -78,9 +78,6 @@ public class NewsEventsFragment extends Fragment {
          */
         mBinding.listRecyclerview.setHasFixedSize(true);
 
-        /* Show data downloading */
-        mBinding.swipeRefresh.setOnRefreshListener(null);
-
         return mBinding.getRoot();
     }
 
