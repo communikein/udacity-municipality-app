@@ -1,4 +1,4 @@
-package it.communikein.udacity_municipality.models;
+package it.communikein.udacity_municipality.data.model;
 
 //import com.google.firebase.
 
@@ -28,6 +28,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.type = type;
+
     }
 
 }
