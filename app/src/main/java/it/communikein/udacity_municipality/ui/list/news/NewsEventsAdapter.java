@@ -1,4 +1,4 @@
-package it.communikein.udacity_municipality.ui.list;
+package it.communikein.udacity_municipality.ui.list.news;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.Nullable;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.data.model.News;
 import it.communikein.udacity_municipality.databinding.NewsEventListItemBinding;
-import it.communikein.udacity_municipality.ui.list.NewsEventsAdapter.NewsViewHolder;
+import it.communikein.udacity_municipality.ui.list.news.NewsEventsAdapter.NewsViewHolder;
 
 public class NewsEventsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
