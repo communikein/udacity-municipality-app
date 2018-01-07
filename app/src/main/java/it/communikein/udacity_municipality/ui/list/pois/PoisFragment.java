@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import dagger.android.support.AndroidSupportInjection;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.data.model.Poi;
 import it.communikein.udacity_municipality.databinding.FragmentPoisBinding;
+import it.communikein.udacity_municipality.ui.MainActivity;
 import it.communikein.udacity_municipality.ui.list.news.NewsEventsFragment;
 import it.communikein.udacity_municipality.viewmodel.PoisViewModel;
 import it.communikein.udacity_municipality.viewmodel.factory.PoisViewModelFactory;
@@ -77,6 +79,7 @@ public class PoisFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setTitle();
 
         mViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
@@ -111,6 +114,18 @@ public class PoisFragment extends Fragment implements OnMapReadyCallback {
         updateMap(pois);
     }
 
+    /**
+     * Change the Activity's ActionBar title.
+     */
+    private void setTitle() {
+        if (getActivity() != null) {
+            /* Get a reference to the MainActivity ActionBar */
+            ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
+            /* If there is an ActionBar, set it's title */
+            if (actionBar != null)
+                actionBar.setTitle(R.string.title_pois);
+        }
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

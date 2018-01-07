@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import dagger.android.support.AndroidSupportInjection;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.data.model.News;
 import it.communikein.udacity_municipality.databinding.FragmentNewsEventsBinding;
+import it.communikein.udacity_municipality.ui.MainActivity;
 import it.communikein.udacity_municipality.viewmodel.NewsViewModel;
 import it.communikein.udacity_municipality.viewmodel.factory.NewsViewModelFactory;
 
@@ -85,6 +87,7 @@ public class NewsEventsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setTitle();
 
         /* Create a new BookletAdapter. It will be responsible for displaying the list's items */
         final NewsEventsAdapter mAdapter = new NewsEventsAdapter(null);
@@ -102,6 +105,19 @@ public class NewsEventsFragment extends Fragment {
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mBinding.listRecyclerview.setAdapter(mAdapter);
+    }
+
+    /**
+     * Change the Activity's ActionBar title.
+     */
+    private void setTitle() {
+        if (getActivity() != null) {
+            /* Get a reference to the MainActivity ActionBar */
+            ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
+            /* If there is an ActionBar, set it's title */
+            if (actionBar != null)
+                actionBar.setTitle(R.string.title_news_and_events);
+        }
     }
 
 }

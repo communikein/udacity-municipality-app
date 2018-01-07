@@ -1,9 +1,19 @@
 package it.communikein.udacity_municipality.ui;
 
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +28,8 @@ import it.communikein.udacity_municipality.databinding.ActivityMainBinding;
 import it.communikein.udacity_municipality.ui.list.news.NewsEventsFragment;
 import it.communikein.udacity_municipality.ui.list.pois.PoisFragment;
 
-public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector {
+public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector,
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -38,6 +49,12 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     public static final String TAG_FRAGMENT_NEWS = "tab-news";
     public static final String TAG_FRAGMENT_POIS = "tab-pois";
 
+    private static final long DRAWER_CLOSE_DELAY_MS = 250;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private final Handler mDrawerActionHandler = new Handler();
+    private final String DRAWER_ITEM_SELECTED = "drawer-item-selected";
+    private int drawerItemSelectedId = R.id.navigation_home;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +63,24 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        initUI();
+        initUI(savedInstanceState);
     }
 
-    private void initUI() {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(DRAWER_ITEM_SELECTED, drawerItemSelectedId);
+        super.onSaveInstanceState(outState);
+    }
+
+    private void initUI(Bundle savedInstanceState) {
         buildFragmentsList();
 
-        mBinding.navigation.setOnNavigationItemSelectedListener(item ->
-                switchFragment(item.getItemId()));
-        int navId = getNavIdFromFragmentTag(FRAGMENT_SELECTED_TAG);
-        mBinding.navigation.setSelectedItemId(navId);
+        setSupportActionBar(mBinding.toolbar);
+
+        initDrawer(savedInstanceState);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     private void buildFragmentsList() {
@@ -63,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         fragments.add(INDEX_FRAGMENT_POIS, new PoisFragment());
     }
 
-    private boolean switchFragment(int tab_id) {
+    private boolean navigate(int tab_id) {
         int index = INDEX_FRAGMENT_NEWS;
 
         switch (tab_id) {
@@ -88,25 +113,99 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         return true;
     }
 
-    private int getNavIdFromFragmentTag(String tag) {
-        int id = R.id.navigation_news_and_events;
+    private void initDrawer(Bundle savedInstanceState){
+        initHeader();
 
-        if (tag != null) switch(tag) {
-            case TAG_FRAGMENT_NEWS:
-                id = R.id.navigation_news_and_events;
-                break;
+        mDrawerToggle = new ActionBarDrawerToggle(this, mBinding.drawerLayout,
+                mBinding.toolbar, R.string.open, R.string.close);
+        mBinding.drawerLayout.addDrawerListener(mDrawerToggle);
+        mBinding.navigation.setNavigationItemSelectedListener(this);
 
-            case TAG_FRAGMENT_POIS:
-                id = R.id.navigation_pois;
-                break;
+        if (savedInstanceState != null) {
+            /* Get the last selected drawer menu item ID */
+            drawerItemSelectedId = savedInstanceState.getInt(DRAWER_ITEM_SELECTED);
 
-            default:
-                id = R.id.navigation_news_and_events;
-                break;
+            /* Remove this entry to avoid problems further */
+            savedInstanceState.remove(DRAWER_ITEM_SELECTED);
+            if (savedInstanceState.size() == 0)
+                savedInstanceState = null;
         }
 
-        return id;
+        mBinding.navigation.getMenu()
+                .findItem(drawerItemSelectedId)
+                .setChecked(true);
+        /*
+         * If the savedInstanceState is not null, it means we don't need to display the fragment,
+         * since it has already been saved and will be restored by the system
+         */
+        if (savedInstanceState == null) {
+            navigate(R.id.navigation_news_and_events);
+        }
     }
+
+    private void initHeader() {
+        View header = mBinding.navigation.getHeaderView(0);
+
+        ImageView userImageView = header.findViewById(R.id.circleView);
+        TextView userNameTextView = header.findViewById(R.id.user_name_textview);
+        TextView userEmailTextView = header.findViewById(R.id.user_email_textview);
+
+        userImageView.setImageResource(R.mipmap.fumagalli);
+        userNameTextView.setText("Brambilla Fumagalli");
+        userEmailTextView.setText("brambilla.fumagalli@gmail.com");
+    }
+
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
+        /* Update highlighted item in the navigation menu */
+        drawerItemSelectedId = menuItem.getItemId();
+        uncheckNavigationDrawersItems();
+        menuItem.setChecked(true);
+
+        /*
+         * Allow some time after closing the drawer before performing real navigation
+         * so the user can see what is happening.
+         */
+        mBinding.drawerLayout.closeDrawer(GravityCompat.START);
+        mDrawerActionHandler.postDelayed(() ->
+                navigate(menuItem.getItemId()), DRAWER_CLOSE_DELAY_MS);
+
+        return true;
+    }
+
+    private void uncheckNavigationDrawersItems() {
+        int size = mBinding.navigation.getMenu().size();
+
+        for (int i=0; i<size; i++)
+            mBinding.navigation.getMenu().getItem(i).setChecked(false);
+    }
+
+
 
 
     @Override
