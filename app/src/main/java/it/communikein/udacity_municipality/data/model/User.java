@@ -1,13 +1,5 @@
 package it.communikein.udacity_municipality.data.model;
 
-//import com.google.firebase.
-
-import com.google.firebase.database.IgnoreExtraProperties;
-
-
-
-// [START user_class]
-@IgnoreExtraProperties
 public class User {
     public enum typeOfUser {
 

@@ -38,11 +38,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.data.model.User;
@@ -54,7 +50,6 @@ public class LoginFirebase extends AppCompatActivity {
      *              GOOGLE                 *
      ***************************************/
     /* Request code used to invoke sign in user interactions for Google+ */
-    public static final int RC_GOOGLE_SIGNUP = 1;
     public static final int RC_GOOGLE_SIGNIN = 1;
     /* Client used to interact with Google APIs. */
     private GoogleApiClient mGoogleApiClient;
@@ -73,13 +68,10 @@ public class LoginFirebase extends AppCompatActivity {
     // firebase authnetication
     private FirebaseAuth mAuth;
 
-    //firebase database
-    private DatabaseReference mDatabase;
     /* The login button for Google */
     private SignInButton mGoogleLoginButton;
 
     /*The class used for Client*/
-
     GoogleSignInClient mGoogleSignInClient;
 
     /*The image view for dispalying personal pic */
@@ -90,6 +82,7 @@ public class LoginFirebase extends AppCompatActivity {
     private EditText mPasswordField;
     private Button mSignUpButton;
     private User userLogged;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +91,6 @@ public class LoginFirebase extends AppCompatActivity {
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
         mDetailTextView = (TextView) findViewById(R.id.detail);
-// Views
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(buttonListener);
@@ -112,10 +104,10 @@ public class LoginFirebase extends AppCompatActivity {
                 .requestEmail()
                 .build();
 
-// Build a GoogleSignInClient with the options specified by gso.
+        // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+
 
 
     }
@@ -225,37 +217,38 @@ public class LoginFirebase extends AppCompatActivity {
 
     private void writeNewUser(String userId, String name, String email) {
         userLogged = new User(name, email,User.typeOfUser.Citizien);
-        mDatabase.child("users").child(userId).setValue(userLogged);
     }
+    private void signInAnonymously() {
 
+        // [START signin_anonymously]
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInAnonymously:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            // that to do here????? For now just a Toast is enough
+                            Toast.makeText(LoginFirebase.this, "Authentication Anonimous is okay.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInAnonymously:failure", task.getException());
+                            Toast.makeText(LoginFirebase.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI();
+                        }
+
+                    }
+                });
+        // [END signin_anonymously]
+    }
     private void onAuthSuccess(FirebaseUser user) {
         String username = usernameFromEmail(user.getEmail());
-        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("/users");
-        rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild(user.getUid())) {
-                    // run some code
-                    userLogged =dataSnapshot.child(user.getUid()).getValue(User.class);
-                    Log.w(TAG, "Google contact already in DB");
-                    updateUI();
-                }else{
-                    writeNewUser(user.getUid(), username, user.getEmail());
-                    Log.w(TAG, "Google contact inserted in DB");
-                    updateUI();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-            // Write new user
-        // Go to MainActivity
-
-        //finish();
-
+        writeNewUser(user.getUid(), username, user.getEmail());
+        updateUI();
     }
 
     public User returnUserLogged(){
@@ -283,10 +276,18 @@ public class LoginFirebase extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        //if(currentUser!=null)
+        if(currentUser!=null) {
+            if (currentUser.isAnonymous()) {
+                // Do something
+                Toast.makeText(LoginFirebase.this, "Authentication Anonimous is okay.",
+                        Toast.LENGTH_SHORT).show();
+            }else{
+                onAuthSuccess(currentUser);
+            }
+            //
+        }else{
+            signInAnonymously();
+        }
             updateUI();
     }
-
-
-
 }
