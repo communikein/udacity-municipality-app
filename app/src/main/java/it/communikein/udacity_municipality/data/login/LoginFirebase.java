@@ -87,7 +87,7 @@ public class LoginFirebase extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_firebase);
-        userLogged = null;
+        userLogged = User.getInstance();
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
         mDetailTextView = (TextView) findViewById(R.id.detail);
@@ -138,14 +138,14 @@ public class LoginFirebase extends AppCompatActivity {
                         updateUI();
                     }
                 });
-        userLogged = null;
+        userLogged.setLogged(false);
         updateUI();
     }
     private void updateUI() {
 
-        if (userLogged != null) {
-            mStatusTextView.setText(getString(R.string.google_status_fmt, userLogged.email));
-            if(userLogged.type == User.typeOfUser.Citizien)
+        if (userLogged.isLogged()) {
+            mStatusTextView.setText(getString(R.string.google_status_fmt, userLogged.getEmail()));
+            if(userLogged.getType() == User.typeOfUser.Citizien)
                 mDetailTextView.setText("Role : Cittadino");
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
@@ -216,7 +216,10 @@ public class LoginFirebase extends AppCompatActivity {
 
 
     private void writeNewUser(String userId, String name, String email) {
-        userLogged = new User(name, email,User.typeOfUser.Citizien);
+        userLogged.setEmail(email);
+        userLogged.setType(User.typeOfUser.Citizien);
+        userLogged.setLogged(true);
+        userLogged.setUsername(name);
     }
     private void signInAnonymously() {
 
@@ -266,7 +269,7 @@ public class LoginFirebase extends AppCompatActivity {
                         updateUI();
                     }
                 });
-        userLogged = null;
+        userLogged.setLogged(false);
         updateUI();
     }
 

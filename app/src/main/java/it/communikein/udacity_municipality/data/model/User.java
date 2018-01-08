@@ -1,26 +1,64 @@
 package it.communikein.udacity_municipality.data.model;
 
-public class User {
-    public enum typeOfUser {
+import android.provider.CalendarContract;
 
+public class User {
+
+    public enum typeOfUser {
         Citizien,
         Municipality_Worker
-
     };
 
-    public String username;
-    public String email;
-    public typeOfUser type;
+    private String username;
+    private String email;
+    private typeOfUser type;
+    private boolean logged;
 
-    public User() {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+
+    private User() {
+        setLogged(false);
     }
 
-    public User(String username, String email,typeOfUser type) {
-        this.username = username;
-        this.email = email;
-        this.type = type;
+    private static class SingletonHolder {
+        private static final User userInstance = new User();
 
+    }
+
+    public static User getInstance() {
+        return SingletonHolder.userInstance;
+    }
+
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public typeOfUser getType() {
+        return type;
+    }
+
+    public boolean isLogged() {
+        return logged;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setType(typeOfUser type) {
+        this.type = type;
+    }
+
+    public void setLogged(boolean logged) {
+        this.logged = logged;
     }
 
 }
