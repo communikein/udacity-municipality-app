@@ -36,5 +36,7 @@ obj/
 # key
 app/src/main/res/values/secrets.xml
 
+#services.json
+app/google-services.json
 #private
 private/
