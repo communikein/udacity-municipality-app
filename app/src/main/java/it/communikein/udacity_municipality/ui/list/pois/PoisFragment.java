@@ -8,27 +8,22 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import it.communikein.udacity_municipality.R;
-import it.communikein.udacity_municipality.data.model.Poi;
 import it.communikein.udacity_municipality.databinding.FragmentPoisBinding;
 import it.communikein.udacity_municipality.ui.MainActivity;
 import it.communikein.udacity_municipality.ui.list.news.NewsEventsFragment;
@@ -38,9 +33,13 @@ import it.communikein.udacity_municipality.viewmodel.factory.PoisViewModelFactor
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PoisFragment extends Fragment implements OnMapReadyCallback {
+public class PoisFragment extends Fragment {
 
     private static final String LOG_TAG = NewsEventsFragment.class.getSimpleName();
+
+    public static final ArrayList<String> TABS_TITLE = new ArrayList<>();
+    private static final String FRAGMENT_MAP_TITLE = "Map";
+    private static final String FRAGMENT_LIST_TITLE = "List";
 
     /*  */
     private FragmentPoisBinding mBinding;
@@ -52,12 +51,11 @@ public class PoisFragment extends Fragment implements OnMapReadyCallback {
     /* */
     private PoisViewModel mViewModel;
 
-    /* Might be null if Google Play services APK is not available. */
-    private GoogleMap mMap = null;
-    private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
-    private static final LatLng bergamo = new LatLng(45.6983, 9.6773);
-    private static final LatLng rome = new LatLng(41.9028, 12.4964);
 
+    public PoisFragment() {
+        TABS_TITLE.add(FRAGMENT_MAP_TITLE);
+        TABS_TITLE.add(FRAGMENT_LIST_TITLE);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -71,8 +69,6 @@ public class PoisFragment extends Fragment implements OnMapReadyCallback {
         /* Inflate the layout for this fragment */
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_pois, container, false);
 
-        initMap(savedInstanceState);
-
         return mBinding.getRoot();
     }
 
@@ -81,37 +77,25 @@ public class PoisFragment extends Fragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
         setTitle();
 
+        Log.d(LOG_TAG, "Get the View Model.");
+
         mViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(PoisViewModel.class);
+
+        Log.d(LOG_TAG, "Init the UI.");
 
         initUI();
     }
 
     private void initUI() {
-        mViewModel.getObservableAllPois().observe(this, list -> {
-            if (list != null) {
-                Log.d(LOG_TAG, "Updating the news list. " + list.size() + " elements.");
-                updateUI(list);
-            }
-        });
-    }
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.showTabsLayout(TABS_TITLE);
 
-    private void initMap(Bundle savedInstanceState) {
-        // *** IMPORTANT ***
-        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
-        // objects or sub-Bundles.
-        Bundle mapViewBundle = null;
-        if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+            initViewPager(mBinding.viewpager);
+            mainActivity.mBinding.tabs.setupWithViewPager(mBinding.viewpager);
         }
-
-        mBinding.map.onCreate(mapViewBundle);
-        mBinding.map.getMapAsync(this);
-    }
-
-    private void updateUI(List<Poi> pois) {
-        updateMap(pois);
     }
 
     /**
@@ -127,67 +111,51 @@ public class PoisFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.mMap = googleMap;
 
-        updateMap(mViewModel.getObservableAllPois().getValue());
-    }
+    private void initViewPager(ViewPager viewPager) {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            Adapter adapter = new Adapter(getChildFragmentManager());
 
-    private void updateMap(List<Poi> pois) {
-        if (mMap != null) {
-            for (Poi poi : pois) {
-                LatLng coords = new LatLng(poi.getLocationLat(), poi.getLocationLng());
+            PoisMapFragment poisMapFragment = new PoisMapFragment();
+            poisMapFragment.setViewModel(mViewModel);
 
-                mMap.addMarker(new MarkerOptions().position(coords));
-            }
+            PoisListFragment poisListFragment = new PoisListFragment();
+            poisListFragment.setViewModel(mViewModel);
 
-            CameraPosition.Builder builder = new CameraPosition.Builder();
-            builder.target(rome);
-            builder.zoom(5f);
+            adapter.addFragment(poisMapFragment, FRAGMENT_MAP_TITLE);
+            adapter.addFragment(poisListFragment, FRAGMENT_LIST_TITLE);
 
-            CameraUpdate update = CameraUpdateFactory.newCameraPosition(builder.build());
-            mMap.moveCamera(update);
+            viewPager.setAdapter(adapter);
         }
     }
 
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
-        if (mapViewBundle == null) {
-            mapViewBundle = new Bundle();
-            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
+        public Adapter(FragmentManager manager) {
+            super(manager);
         }
 
-        mBinding.map.onSaveInstanceState(mapViewBundle);
-    }
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
 
-    @Override
-    public void onResume() {
-        mBinding.map.onResume();
-        super.onResume();
-    }
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
 
-    @Override
-    public void onPause() {
-        mBinding.map.onPause();
-        super.onPause();
-    }
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mBinding.map.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mBinding.map.onLowMemory();
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }

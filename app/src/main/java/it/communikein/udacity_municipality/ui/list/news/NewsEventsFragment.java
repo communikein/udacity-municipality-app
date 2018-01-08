@@ -86,6 +86,8 @@ public class NewsEventsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         setTitle();
 
+        ((MainActivity) getActivity()).hideTabsLayout();
+
         /* Create a new BookletAdapter. It will be responsible for displaying the list's items */
         final NewsEventsAdapter mAdapter = new NewsEventsAdapter(null);
 

@@ -1,4 +1,4 @@
-package it.communikein.udacity_municipality.ui.list.news;
+package it.communikein.udacity_municipality.ui.list.pois;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.Nullable;
@@ -10,18 +10,18 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import it.communikein.udacity_municipality.R;
-import it.communikein.udacity_municipality.data.model.News;
-import it.communikein.udacity_municipality.databinding.NewsEventListItemBinding;
-import it.communikein.udacity_municipality.ui.list.news.NewsEventsAdapter.NewsViewHolder;
+import it.communikein.udacity_municipality.data.model.Poi;
+import it.communikein.udacity_municipality.databinding.ListItemPoiBinding;
+import it.communikein.udacity_municipality.ui.list.pois.PoisListAdapter.PoiViewHolder;
 
-public class NewsEventsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
+public class PoisListAdapter extends RecyclerView.Adapter<PoiViewHolder> {
 
     @Nullable
-    private final NewsClickCallback mOnClickListener;
+    private final PoiClickCallback mOnClickListener;
 
-    private ArrayList<News> mList;
+    private ArrayList<Poi> mList;
 
-    public interface NewsClickCallback {
+    public interface PoiClickCallback {
         void onListItemClick(String id);
     }
 
@@ -30,27 +30,26 @@ public class NewsEventsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
      *
      * @param newsClickCallback Used to talk to the UI and app resources
      */
-    NewsEventsAdapter(@Nullable NewsClickCallback newsClickCallback) {
+    PoisListAdapter(@Nullable PoiClickCallback newsClickCallback) {
         mOnClickListener = newsClickCallback;
     }
 
     @Override
-    public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        NewsEventListItemBinding mBinding = DataBindingUtil
-                .inflate(LayoutInflater.from(parent.getContext()), R.layout.list_item_news_event,
-                        parent, false);
+    public PoiViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ListItemPoiBinding mBinding = DataBindingUtil.inflate(
+                LayoutInflater.from(parent.getContext()), R.layout.list_item_poi, parent, false);
         mBinding.setCallback(mOnClickListener);
 
-        return new NewsViewHolder(mBinding);
+        return new PoiViewHolder(mBinding);
     }
 
     @Override
-    public void onBindViewHolder(NewsViewHolder holder, int position) {
-        News news = mList.get(position);
+    public void onBindViewHolder(PoiViewHolder holder, int position) {
+        Poi poi = mList.get(position);
 
-        holder.mBinding.setNews(news);
-        holder.mBinding.descriptionTextview.setText(news.getDescription());
-        holder.mBinding.titleTextview.setText(news.getTitle());
+        holder.mBinding.setPoi(poi);
+        holder.mBinding.titleTextview.setText(poi.getTitle());
+        holder.mBinding.descriptionTextview.setText(poi.getDescription());
     }
 
     @Override
@@ -59,7 +58,7 @@ public class NewsEventsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
     }
 
 
-    public void setList(final ArrayList<News> newList) {
+    public void setList(final ArrayList<Poi> newList) {
         if (mList == null) {
             mList = newList;
             notifyItemRangeInserted(0, mList.size());
@@ -83,8 +82,8 @@ public class NewsEventsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    News newItem = newList.get(newItemPosition);
-                    News oldItem = mList.get(oldItemPosition);
+                    Poi newItem = newList.get(newItemPosition);
+                    Poi oldItem = mList.get(oldItemPosition);
                     return oldItem.displayEquals(newItem);
                 }
             });
@@ -94,11 +93,11 @@ public class NewsEventsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
     }
 
 
-    class NewsViewHolder extends RecyclerView.ViewHolder {
+    class PoiViewHolder extends RecyclerView.ViewHolder {
 
-        final NewsEventListItemBinding mBinding;
+        final ListItemPoiBinding mBinding;
 
-        NewsViewHolder(NewsEventListItemBinding binding) {
+        PoiViewHolder(ListItemPoiBinding binding) {
             super(binding.getRoot());
 
             this.mBinding = binding;
