@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_gravity="start"
             app:headerLayout="@layout/drawer_header"
-            app:itemIconTint="@color/iconColor"
+            app:itemIconTint="@color/navigation_drawer_item"
             app:menu="@menu/bottom_navigation" />
 
     </android.support.v4.widget.DrawerLayout>
