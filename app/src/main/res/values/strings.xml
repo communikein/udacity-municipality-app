@@ -4,6 +4,9 @@
     <string name="title_home">Home</string>
     <string name="title_news_and_events"><![CDATA[News & Events]]></string>
     <string name="title_pois">POIs</string>
+    <string name="title_reportings">Segnalazioni</string>
+    <string name="title_share">Condividi</string>
+    <string name="title_settings">Impostazioni</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

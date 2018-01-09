@@ -1,19 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home"
-        android:title="@string/title_home" />
+    <group android:checkableBehavior="single"
+        android:id="@+id/nav_home_group">
 
-    <item
-        android:id="@+id/navigation_news_and_events"
-        android:icon="@drawable/ic_archive"
-        android:title="@string/title_news_and_events" />
+        <item
+            android:id="@+id/navigation_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/title_home" />
 
-    <item
-        android:id="@+id/navigation_pois"
-        android:icon="@drawable/ic_poi"
-        android:title="@string/title_pois" />
+    </group>
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/nav_main_group">
+
+        <item
+            android:id="@+id/navigation_news_and_events"
+            android:icon="@drawable/ic_account_balance_black_24dp"
+            android:title="@string/title_news_and_events"
+            />
+
+        <item
+            android:id="@+id/nav_reportings"
+            android:icon="@drawable/ic_report_problem_black_24dp"
+            android:title="@string/title_reportings" />
+
+        <item
+            android:id="@+id/navigation_pois"
+            android:icon="@drawable/ic_poi"
+            android:title="@string/title_pois" />
+
+    </group>
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/nav_pref_group">
+        <item
+            android:id="@+id/nav_share"
+            android:title="@string/title_share"
+            android:icon="@drawable/ic_share_black_24dp"/>
+        <item
+            android:id="@+id/nav_settings"
+            android:title="@string/title_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            />
+    </group>
 
 </menu>

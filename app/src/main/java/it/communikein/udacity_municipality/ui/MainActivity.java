@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
     private ActivityMainBinding mBinding;
 
-
     private final List<Fragment> fragments = new ArrayList<>();
 
     public static String FRAGMENT_SELECTED_TAG;
@@ -151,10 +150,9 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         TextView userEmailTextView = header.findViewById(R.id.user_email_textview);
 
         userImageView.setImageResource(R.mipmap.fumagalli);
-        userNameTextView.setText("Brambilla Fumagalli");
-        userEmailTextView.setText("brambilla.fumagalli@gmail.com");
+        userNameTextView.setText(getString(R.string.holder_user_name));
+        userEmailTextView.setText(getString(R.string.holder_user_email));
     }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -205,8 +203,14 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             mBinding.navigation.getMenu().getItem(i).setChecked(false);
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        if (mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public DispatchingAndroidInjector<Fragment> supportFragmentInjector() {
