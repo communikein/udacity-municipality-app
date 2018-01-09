@@ -165,10 +165,12 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         ImageView userImageView = header.findViewById(R.id.circleView);
         TextView userNameTextView = header.findViewById(R.id.user_name_textview);
         TextView userEmailTextView = header.findViewById(R.id.user_email_textview);
+        ImageView userBackgroundView = header.findViewById(R.id.backgroundView);
 
         userImageView.setImageResource(R.mipmap.fumagalli);
         userNameTextView.setText(getString(R.string.holder_user_name));
         userEmailTextView.setText(getString(R.string.holder_user_email));
+        userBackgroundView.setImageResource(R.mipmap.aldo_giovanni_giacomo);
     }
 
     @Override
