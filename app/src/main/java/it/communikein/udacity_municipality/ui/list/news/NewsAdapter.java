@@ -5,41 +5,42 @@ import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
 import it.communikein.udacity_municipality.R;
+import it.communikein.udacity_municipality.data.model.Event;
 import it.communikein.udacity_municipality.data.model.News;
-import it.communikein.udacity_municipality.databinding.NewsEventListItemBinding;
-import it.communikein.udacity_municipality.ui.list.news.NewsEventsAdapter.NewsViewHolder;
+import it.communikein.udacity_municipality.databinding.ListItemNewsEventBinding;
+import it.communikein.udacity_municipality.ui.list.news.NewsAdapter.NewsViewHolder;
 
-public class NewsEventsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
-
-    @Nullable
-    private final NewsClickCallback mOnClickListener;
+public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
     private ArrayList<News> mList;
 
+    @Nullable
+    private final NewsClickCallback mOnClickListener;
     public interface NewsClickCallback {
-        void onListItemClick(String id);
+        void onListNewsClick(News news);
+        void onListEventClick(Event event);
     }
 
     /**
-     * Creates a NewsEventsAdapter.
+     * Creates a NewsAdapter.
      *
      * @param newsClickCallback Used to talk to the UI and app resources
      */
-    NewsEventsAdapter(@Nullable NewsClickCallback newsClickCallback) {
+    NewsAdapter(@Nullable NewsClickCallback newsClickCallback) {
         mOnClickListener = newsClickCallback;
     }
 
     @Override
     public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        NewsEventListItemBinding mBinding = DataBindingUtil
+        ListItemNewsEventBinding mBinding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.list_item_news_event,
                         parent, false);
-        mBinding.setCallback(mOnClickListener);
 
         return new NewsViewHolder(mBinding);
     }
@@ -94,14 +95,28 @@ public class NewsEventsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
     }
 
 
-    class NewsViewHolder extends RecyclerView.ViewHolder {
+    class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        final NewsEventListItemBinding mBinding;
+        final ListItemNewsEventBinding mBinding;
 
-        NewsViewHolder(NewsEventListItemBinding binding) {
+        NewsViewHolder(ListItemNewsEventBinding binding) {
             super(binding.getRoot());
 
+            binding.getRoot().setOnClickListener(this);
+
             this.mBinding = binding;
+        }
+
+        @Override
+        public void onClick(View v) {
+            News clicked = mBinding.getNews();
+
+            if (mOnClickListener != null) {
+                if (clicked instanceof Event)
+                    mOnClickListener.onListEventClick((Event) clicked);
+                else
+                    mOnClickListener.onListNewsClick(clicked);
+            }
         }
     }
 }

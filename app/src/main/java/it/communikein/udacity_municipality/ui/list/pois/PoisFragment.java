@@ -26,7 +26,7 @@ import dagger.android.support.AndroidSupportInjection;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.databinding.FragmentPoisBinding;
 import it.communikein.udacity_municipality.ui.MainActivity;
-import it.communikein.udacity_municipality.ui.list.news.NewsEventsFragment;
+import it.communikein.udacity_municipality.ui.list.news.NewsFragment;
 import it.communikein.udacity_municipality.viewmodel.PoisViewModel;
 import it.communikein.udacity_municipality.viewmodel.factory.PoisViewModelFactory;
 
@@ -35,7 +35,7 @@ import it.communikein.udacity_municipality.viewmodel.factory.PoisViewModelFactor
  */
 public class PoisFragment extends Fragment {
 
-    private static final String LOG_TAG = NewsEventsFragment.class.getSimpleName();
+    private static final String LOG_TAG = NewsFragment.class.getSimpleName();
 
     public static final ArrayList<String> TABS_TITLE = new ArrayList<>();
     private static final String FRAGMENT_MAP_TITLE = "Map";

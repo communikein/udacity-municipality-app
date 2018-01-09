@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -16,29 +17,27 @@ import it.communikein.udacity_municipality.ui.list.pois.PoisListAdapter.PoiViewH
 
 public class PoisListAdapter extends RecyclerView.Adapter<PoiViewHolder> {
 
-    @Nullable
-    private final PoiClickCallback mOnClickListener;
-
     private ArrayList<Poi> mList;
 
-    public interface PoiClickCallback {
-        void onListItemClick(String id);
+    @Nullable
+    private OnListItemClickListener mOnClickListener;
+    public interface OnListItemClickListener {
+        void onListPoiClick(Poi poi);
     }
 
     /**
-     * Creates a NewsEventsAdapter.
+     * Creates a PoisListAdapter.
      *
-     * @param newsClickCallback Used to talk to the UI and app resources
+     * @param onListItemClickListener Used to talk to the UI and app resources
      */
-    PoisListAdapter(@Nullable PoiClickCallback newsClickCallback) {
-        mOnClickListener = newsClickCallback;
+    PoisListAdapter(@Nullable OnListItemClickListener onListItemClickListener) {
+        mOnClickListener = onListItemClickListener;
     }
 
     @Override
     public PoiViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ListItemPoiBinding mBinding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.getContext()), R.layout.list_item_poi, parent, false);
-        mBinding.setCallback(mOnClickListener);
 
         return new PoiViewHolder(mBinding);
     }
@@ -93,14 +92,23 @@ public class PoisListAdapter extends RecyclerView.Adapter<PoiViewHolder> {
     }
 
 
-    class PoiViewHolder extends RecyclerView.ViewHolder {
+    class PoiViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         final ListItemPoiBinding mBinding;
 
         PoiViewHolder(ListItemPoiBinding binding) {
             super(binding.getRoot());
 
+            binding.getRoot().setOnClickListener(this);
+
             this.mBinding = binding;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mOnClickListener != null) {
+                mOnClickListener.onListPoiClick(mBinding.getPoi());
+            }
         }
     }
 }

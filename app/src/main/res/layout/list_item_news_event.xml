@@ -7,14 +7,11 @@
     <data>
         <variable name="news"
             type="it.communikein.udacity_municipality.data.model.News"/>
-        <variable name="callback"
-            type="it.communikein.udacity_municipality.ui.list.news.NewsEventsAdapter.NewsClickCallback"/>
     </data>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() ->  callback.onListItemClick(news.getId())}"
         app:cardUseCompatPadding="true">
 
         <android.support.constraint.ConstraintLayout

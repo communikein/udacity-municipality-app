@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import dagger.android.support.AndroidSupportInjection;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.data.model.News;
-import it.communikein.udacity_municipality.databinding.FragmentNewsEventsBinding;
+import it.communikein.udacity_municipality.databinding.SimpleListBinding;
 import it.communikein.udacity_municipality.ui.MainActivity;
 import it.communikein.udacity_municipality.viewmodel.NewsViewModel;
 import it.communikein.udacity_municipality.viewmodel.factory.NewsViewModelFactory;
@@ -30,12 +30,12 @@ import it.communikein.udacity_municipality.viewmodel.factory.NewsViewModelFactor
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewsEventsFragment extends Fragment {
+public class NewsFragment extends Fragment {
 
-    private static final String LOG_TAG = NewsEventsFragment.class.getSimpleName();
+    private static final String LOG_TAG = NewsFragment.class.getSimpleName();
 
     /*  */
-    private FragmentNewsEventsBinding mBinding;
+    private SimpleListBinding mBinding;
 
     /* */
     @Inject
@@ -55,7 +55,7 @@ public class NewsEventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         /* Inflate the layout for this fragment */
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_news_events, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.simple_list, container, false);
 
         /*
          * A LinearLayoutManager is responsible for measuring and positioning item views within a
@@ -89,7 +89,7 @@ public class NewsEventsFragment extends Fragment {
         ((MainActivity) getActivity()).hideTabsLayout();
 
         /* Create a new BookletAdapter. It will be responsible for displaying the list's items */
-        final NewsEventsAdapter mAdapter = new NewsEventsAdapter(null);
+        final NewsAdapter mAdapter = new NewsAdapter(null);
 
         mViewModel = ViewModelProviders
                 .of(this, viewModelFactory)

@@ -25,7 +25,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.databinding.ActivityMainBinding;
-import it.communikein.udacity_municipality.ui.list.news.NewsEventsFragment;
+import it.communikein.udacity_municipality.ui.list.news.NewsFragment;
 import it.communikein.udacity_municipality.ui.list.pois.PoisFragment;
 
 public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector,
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     }
 
     private void buildFragmentsList() {
-        fragments.add(INDEX_FRAGMENT_NEWS, new NewsEventsFragment());
+        fragments.add(INDEX_FRAGMENT_NEWS, new NewsFragment());
         fragments.add(INDEX_FRAGMENT_POIS, new PoisFragment());
     }
 

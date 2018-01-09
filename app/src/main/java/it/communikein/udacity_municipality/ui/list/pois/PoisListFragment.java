@@ -22,7 +22,7 @@ import it.communikein.udacity_municipality.viewmodel.PoisViewModel;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PoisListFragment extends Fragment {
+public class PoisListFragment extends Fragment implements PoisListAdapter.OnListItemClickListener {
 
     public static final String LOG_TAG = PoisListFragment.class.getSimpleName();
 
@@ -68,7 +68,7 @@ public class PoisListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAdapter = new PoisListAdapter(null);
+        mAdapter = new PoisListAdapter(this);
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mBinding.listRecyclerview.setAdapter(mAdapter);
@@ -83,5 +83,10 @@ public class PoisListFragment extends Fragment {
 
     public void setViewModel(PoisViewModel viewModel) {
         this.mViewModel = viewModel;
+    }
+
+    @Override
+    public void onListItemClick(Poi poi) {
+
     }
 }
