@@ -11,5 +11,5 @@ Link utili:
   <li>Link al <a href="https://mockingbot.com/app/EbpfzPV02yoy13WgfEgtElKKP4gsTpP#screen=sB296C85A981515000841942">mockup dell'app</a></li>
   <li>Link per un corso veloce (1-2 giorni) per un ripasso delle basi necessarie per lavorare con git su <a href="https://classroom.udacity.com/courses/ud775">Udacity.com</a></li>
   <li>Link con la lista delle cose da fare su <a href="https://trello.com/">trello.com</a></li>
-  <li>Cloud Functions<a href="https://github.com/communikein/comunicapp-backend">repository</a></li>
+  <li>Cloud Functions <a href="https://github.com/communikein/comunicapp-backend">repository</a></li>
 </ul>
