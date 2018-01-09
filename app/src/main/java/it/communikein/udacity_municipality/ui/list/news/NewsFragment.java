@@ -1,8 +1,10 @@
 package it.communikein.udacity_municipality.ui.list.news;
 
 
+import android.app.IntentService;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,16 +23,18 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import it.communikein.udacity_municipality.R;
+import it.communikein.udacity_municipality.data.model.Event;
 import it.communikein.udacity_municipality.data.model.News;
 import it.communikein.udacity_municipality.databinding.SimpleListBinding;
 import it.communikein.udacity_municipality.ui.MainActivity;
+import it.communikein.udacity_municipality.ui.detail.NewsDetailActivity;
 import it.communikein.udacity_municipality.viewmodel.NewsViewModel;
 import it.communikein.udacity_municipality.viewmodel.factory.NewsViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewsFragment extends Fragment {
+public class NewsFragment extends Fragment implements NewsAdapter.NewsClickCallback {
 
     private static final String LOG_TAG = NewsFragment.class.getSimpleName();
 
@@ -84,13 +88,27 @@ public class NewsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setTitle();
 
-        ((MainActivity) getActivity()).hideTabsLayout();
+        setTitle();
+        hideTabs();
 
         /* Create a new BookletAdapter. It will be responsible for displaying the list's items */
-        final NewsAdapter mAdapter = new NewsAdapter(null);
+        final NewsAdapter mAdapter = new NewsAdapter(this, getActivity());
 
+        /* Setting the adapter attaches it to the RecyclerView in our layout. */
+        mBinding.listRecyclerview.setAdapter(mAdapter);
+
+        initViewModel(mAdapter);
+        initFab();
+    }
+
+    private void hideTabs() {
+        if (getActivity() != null) {
+            ((MainActivity) getActivity()).hideTabsLayout();
+        }
+    }
+
+    private void initViewModel(NewsAdapter adapter) {
         mViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(NewsViewModel.class);
@@ -98,12 +116,15 @@ public class NewsFragment extends Fragment {
         mViewModel.getObservableNews().observe(this, list -> {
             if (list != null) {
                 Log.d(LOG_TAG, "Updating the news list. " + list.size() + " elements.");
-                mAdapter.setList((ArrayList<News>) list);
+                adapter.setList((ArrayList<News>) list);
             }
         });
+    }
 
-        /* Setting the adapter attaches it to the RecyclerView in our layout. */
-        mBinding.listRecyclerview.setAdapter(mAdapter);
+    private void initFab() {
+        mBinding.fab.setOnClickListener(v -> {
+            // TODO: Call intent to start new activity
+        });
     }
 
     /**
@@ -119,4 +140,14 @@ public class NewsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onListNewsClick(News news) {
+        Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onListEventClick(Event event) {
+
+    }
 }

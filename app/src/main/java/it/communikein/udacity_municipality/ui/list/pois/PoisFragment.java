@@ -75,27 +75,39 @@ public class PoisFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         setTitle();
+        showTabs();
 
-        Log.d(LOG_TAG, "Get the View Model.");
+        initViewModel();
+        initViewPager();
+        initFab();
+    }
 
+    private void showTabs() {
+        if (getActivity() != null) {
+            ((MainActivity) getActivity()).showTabsLayout(TABS_TITLE);
+        }
+    }
+
+    private void initViewModel() {
         mViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(PoisViewModel.class);
-
-        Log.d(LOG_TAG, "Init the UI.");
-
-        initUI();
     }
 
-    private void initUI() {
+    private void initViewPager() {
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity != null) {
-            mainActivity.showTabsLayout(TABS_TITLE);
-
             initViewPager(mBinding.viewpager);
             mainActivity.mBinding.tabs.setupWithViewPager(mBinding.viewpager);
         }
+    }
+
+    private void initFab() {
+        mBinding.fab.setOnClickListener(v -> {
+            // TODO: Call intent to start new activity
+        });
     }
 
     /**

@@ -89,13 +89,27 @@ public class ReportsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setTitle();
 
-        ((MainActivity) getActivity()).hideTabsLayout();
+        setTitle();
+        hideTabs();
 
         /* Create a new ReportsAdapter. It will be responsible for displaying the list's items */
         final ReportsAdapter mAdapter = new ReportsAdapter(null);
 
+        /* Setting the adapter attaches it to the RecyclerView in our layout. */
+        mBinding.listRecyclerview.setAdapter(mAdapter);
+
+        initViewModel(mAdapter);
+        initFab();
+    }
+
+    private void hideTabs() {
+        if (getActivity() != null) {
+            ((MainActivity) getActivity()).hideTabsLayout();
+        }
+    }
+
+    private void initViewModel(ReportsAdapter adapter) {
         mViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(ReportsViewModel.class);
@@ -103,12 +117,15 @@ public class ReportsFragment extends Fragment {
         mViewModel.getObservableReports().observe(this, list -> {
             if (list != null) {
                 Log.d(LOG_TAG, "Updating the reports list. " + list.size() + " elements.");
-                mAdapter.setList((ArrayList<Report>) list);
+                adapter.setList((ArrayList<Report>) list);
             }
         });
+    }
 
-        /* Setting the adapter attaches it to the RecyclerView in our layout. */
-        mBinding.listRecyclerview.setAdapter(mAdapter);
+    private void initFab() {
+        mBinding.fab.setOnClickListener(v -> {
+            // TODO: Call intent to start new activity
+        });
     }
 
     /**

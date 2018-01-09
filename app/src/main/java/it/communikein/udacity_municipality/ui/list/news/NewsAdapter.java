@@ -1,5 +1,6 @@
 package it.communikein.udacity_municipality.ui.list.news;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
@@ -15,10 +16,12 @@ import it.communikein.udacity_municipality.data.model.Event;
 import it.communikein.udacity_municipality.data.model.News;
 import it.communikein.udacity_municipality.databinding.ListItemNewsBinding;
 import it.communikein.udacity_municipality.ui.list.news.NewsAdapter.NewsViewHolder;
+import it.communikein.udacity_municipality.utilities.ComunicappDateUtils;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
     private ArrayList<News> mList;
+    private Context mContext;
 
     @Nullable
     private final NewsClickCallback mOnClickListener;
@@ -32,8 +35,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
      *
      * @param newsClickCallback Used to talk to the UI and app resources
      */
-    NewsAdapter(@Nullable NewsClickCallback newsClickCallback) {
+    NewsAdapter(@Nullable NewsClickCallback newsClickCallback, Context context) {
         mOnClickListener = newsClickCallback;
+        mContext = context;
     }
 
     @Override
@@ -49,8 +53,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
     public void onBindViewHolder(NewsViewHolder holder, int position) {
         News news = mList.get(position);
 
+        String friendly_date = ComunicappDateUtils
+                .getFriendlyDateString(mContext, news.getTimestamp(), true, true);
+
         holder.mBinding.setNews(news);
-        holder.mBinding.descriptionTextview.setText(news.getDescription());
+        holder.mBinding.timestampTextview.setText(friendly_date);
         holder.mBinding.titleTextview.setText(news.getTitle());
     }
 

@@ -11,37 +11,50 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="112dp"
         app:cardUseCompatPadding="true">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:padding="8dp" >
+
+            <TextView
+                android:id="@+id/timestamp_textview"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:textSize="12sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/title_textview"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="01/01/2018 ore 17.22" />
 
             <TextView
                 android:id="@+id/title_textview"
-                style="@style/TextAppearance.AppCompat.Subhead"
-                android:textSize="18sp"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:ellipsize="marquee"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Lavori in corso" />
-
-            <TextView
-                android:id="@+id/description_textview"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                app:layout_constraintTop_toBottomOf="@id/title_textview"
-                app:layout_constraintStart_toStartOf="@id/title_textview"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                app:layout_constraintTop_toBottomOf="@id/timestamp_textview"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/timestamp_textview"
+                app:layout_constraintEnd_toStartOf="@id/icon_imageview"
                 tools:text="Lavori in corso in Via Don Giovanni Bosco"
-                style="@style/TextAppearance.AppCompat.Caption"
-                android:textSize="16sp"/>
+                android:textColor="@color/black"
+                android:textSize="13sp"/>
+
+            <ImageView
+                android:id="@+id/icon_imageview"
+                android:layout_width="150dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@mipmap/cappella"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </android.support.constraint.ConstraintLayout>
 
