@@ -9,8 +9,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <!-- TODO: Status bar trasparente (problema con API<19) -->
-        <!-- item name="android:windowTranslucentStatus">true</item> -->
     </style>
 
     <style name="Theme.Comunicapp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
