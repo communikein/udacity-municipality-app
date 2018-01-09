@@ -12,4 +12,5 @@ Link utili:
   <li>Link per un corso veloce (1-2 giorni) per un ripasso delle basi necessarie per lavorare con git su <a href="https://classroom.udacity.com/courses/ud775">Udacity.com</a></li>
   <li>Link con la lista delle cose da fare su <a href="https://trello.com/">trello.com</a></li>
   <li>Cloud Functions <a href="https://github.com/communikein/comunicapp-backend">repository</a></li>
+  <li><a href="https://console.firebase.google.com/project/udacity-municipality/settings/general/android:it.communikein.udacity_municipality">Firebase</a></li>
 </ul>
