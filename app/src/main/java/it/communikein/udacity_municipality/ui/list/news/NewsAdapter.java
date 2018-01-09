@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.data.model.Event;
 import it.communikein.udacity_municipality.data.model.News;
-import it.communikein.udacity_municipality.databinding.ListItemNewsEventBinding;
+import it.communikein.udacity_municipality.databinding.ListItemNewsBinding;
 import it.communikein.udacity_municipality.ui.list.news.NewsAdapter.NewsViewHolder;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
@@ -38,8 +38,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
     @Override
     public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ListItemNewsEventBinding mBinding = DataBindingUtil
-                .inflate(LayoutInflater.from(parent.getContext()), R.layout.list_item_news_event,
+        ListItemNewsBinding mBinding = DataBindingUtil
+                .inflate(LayoutInflater.from(parent.getContext()), R.layout.list_item_news,
                         parent, false);
 
         return new NewsViewHolder(mBinding);
@@ -97,9 +97,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
     class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        final ListItemNewsEventBinding mBinding;
+        final ListItemNewsBinding mBinding;
 
-        NewsViewHolder(ListItemNewsEventBinding binding) {
+        NewsViewHolder(ListItemNewsBinding binding) {
             super(binding.getRoot());
 
             binding.getRoot().setOnClickListener(this);

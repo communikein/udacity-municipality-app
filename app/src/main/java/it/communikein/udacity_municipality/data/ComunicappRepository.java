@@ -18,6 +18,7 @@ import javax.inject.Singleton;
 import it.communikein.udacity_municipality.data.model.Event;
 import it.communikein.udacity_municipality.data.model.News;
 import it.communikein.udacity_municipality.data.model.Poi;
+import it.communikein.udacity_municipality.data.model.Report;
 
 @Singleton
 public class ComunicappRepository {
@@ -29,10 +30,12 @@ public class ComunicappRepository {
     private static final String NEWS_COLLECTION = "news";
     private static final String EVENTS_COLLECTION = "events";
     private static final String POIS_COLLECTION = "pois";
+    private static final String REPORTS_COLLECTION = "reports";
 
     private MutableLiveData<List<News>> mNews;
     private MutableLiveData<List<Event>> mEvents;
     private MutableLiveData<List<Poi>> mPois;
+    private MutableLiveData<List<Report>> mReports;
 
 
     @Inject
@@ -42,6 +45,7 @@ public class ComunicappRepository {
         mNews = new MutableLiveData<>();
         mEvents = new MutableLiveData<>();
         mPois = new MutableLiveData<>();
+        mReports = new MutableLiveData<>();
 
         CollectionReference newsReference = firestore.collection(NEWS_COLLECTION);
         newsReference.addSnapshotListener((value, e) -> {
@@ -93,6 +97,23 @@ public class ComunicappRepository {
             }
             mPois.postValue(result);
         });
+
+        CollectionReference reportsReference = firestore.collection(REPORTS_COLLECTION);
+        reportsReference.addSnapshotListener((value, e) -> {
+            if (e != null) {
+                Log.w(LOG_TAG, "Listen to reports failed.", e);
+                return;
+            }
+
+            ArrayList<Report> result = new ArrayList<>();
+            for (DocumentSnapshot doc : value) {
+                Map<String, Object> data = doc.getData();
+                String id = doc.getId();
+
+                result.add(new Report(id, data));
+            }
+            mReports.postValue(result);
+        });
     }
 
 
@@ -106,5 +127,9 @@ public class ComunicappRepository {
 
     public LiveData<List<Poi>> getObservableAllPois() {
         return mPois;
+    }
+
+    public LiveData<List<Report>> getObservableAllReports() {
+        return mReports;
     }
 }

@@ -27,6 +27,7 @@ import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.databinding.ActivityMainBinding;
 import it.communikein.udacity_municipality.ui.list.news.NewsFragment;
 import it.communikein.udacity_municipality.ui.list.pois.PoisFragment;
+import it.communikein.udacity_municipality.ui.list.reports.ReportsFragment;
 
 public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector,
         NavigationView.OnNavigationItemSelectedListener {
@@ -44,9 +45,11 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     public static String FRAGMENT_SELECTED_TAG;
 
     private static final int INDEX_FRAGMENT_NEWS = 0;
-    private static final int INDEX_FRAGMENT_POIS = 1;
+    private static final int INDEX_FRAGMENT_REPORTS = 1;
+    private static final int INDEX_FRAGMENT_POIS = 2;
 
     public static final String TAG_FRAGMENT_NEWS = "tab-news";
+    public static final String TAG_FRAGMENT_REPORTS = "tab-reports";
     public static final String TAG_FRAGMENT_POIS = "tab-pois";
 
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
@@ -85,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
     private void buildFragmentsList() {
         fragments.add(INDEX_FRAGMENT_NEWS, new NewsFragment());
+        fragments.add(INDEX_FRAGMENT_REPORTS, new ReportsFragment());
         fragments.add(INDEX_FRAGMENT_POIS, new PoisFragment());
     }
 
@@ -94,14 +98,22 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         switch (tab_id) {
             case R.id.navigation_home:
                 break;
-            case R.id.navigation_news_and_events:
+
+            case R.id.navigation_news:
                 index = INDEX_FRAGMENT_NEWS;
                 FRAGMENT_SELECTED_TAG = TAG_FRAGMENT_NEWS;
                 break;
+
+            case R.id.navigation_reports:
+                index = INDEX_FRAGMENT_REPORTS;
+                FRAGMENT_SELECTED_TAG = TAG_FRAGMENT_REPORTS;
+                break;
+
             case R.id.navigation_pois:
                 index = INDEX_FRAGMENT_POIS;
                 FRAGMENT_SELECTED_TAG = TAG_FRAGMENT_POIS;
                 break;
+
             default:
                 return false;
         }
@@ -139,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
          * since it has already been saved and will be restored by the system
          */
         if (savedInstanceState == null) {
-            navigate(R.id.navigation_news_and_events);
+            navigate(R.id.navigation_news);
         }
     }
 

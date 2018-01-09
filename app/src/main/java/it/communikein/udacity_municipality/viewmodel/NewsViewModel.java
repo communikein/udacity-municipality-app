@@ -14,7 +14,6 @@ public class NewsViewModel extends ViewModel {
 
     private static final String LOG_TAG = NewsViewModel.class.getSimpleName();
 
-
     private LiveData<List<News>> mData;
 
     @Inject

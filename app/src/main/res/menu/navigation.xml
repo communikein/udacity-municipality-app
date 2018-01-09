@@ -7,9 +7,14 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_news_and_events"
+        android:id="@+id/navigation_news"
         android:icon="@drawable/ic_archive"
-        android:title="@string/title_news_and_events" />
+        android:title="@string/title_news" />
+
+    <item
+        android:id="@+id/navigation_reports"
+        android:icon="@drawable/ic_archive"
+        android:title="@string/title_reports" />
 
     <item
         android:id="@+id/navigation_pois"

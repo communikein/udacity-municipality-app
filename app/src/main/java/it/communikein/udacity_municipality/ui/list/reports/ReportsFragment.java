@@ -1,4 +1,4 @@
-package it.communikein.udacity_municipality.ui.list.news;
+package it.communikein.udacity_municipality.ui.list.reports;
 
 
 import android.arch.lifecycle.ViewModelProviders;
@@ -22,15 +22,20 @@ import javax.inject.Inject;
 import dagger.android.support.AndroidSupportInjection;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.data.model.News;
+import it.communikein.udacity_municipality.data.model.Report;
 import it.communikein.udacity_municipality.databinding.SimpleListBinding;
 import it.communikein.udacity_municipality.ui.MainActivity;
+import it.communikein.udacity_municipality.ui.list.news.NewsAdapter;
+import it.communikein.udacity_municipality.ui.list.news.NewsFragment;
 import it.communikein.udacity_municipality.viewmodel.NewsViewModel;
+import it.communikein.udacity_municipality.viewmodel.ReportsViewModel;
 import it.communikein.udacity_municipality.viewmodel.factory.NewsViewModelFactory;
+import it.communikein.udacity_municipality.viewmodel.factory.ReportsViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewsFragment extends Fragment {
+public class ReportsFragment extends Fragment {
 
     private static final String LOG_TAG = NewsFragment.class.getSimpleName();
 
@@ -39,10 +44,10 @@ public class NewsFragment extends Fragment {
 
     /* */
     @Inject
-    NewsViewModelFactory viewModelFactory;
+    ReportsViewModelFactory viewModelFactory;
 
     /* */
-    private NewsViewModel mViewModel;
+    private ReportsViewModel mViewModel;
 
 
     @Override
@@ -88,17 +93,17 @@ public class NewsFragment extends Fragment {
 
         ((MainActivity) getActivity()).hideTabsLayout();
 
-        /* Create a new BookletAdapter. It will be responsible for displaying the list's items */
-        final NewsAdapter mAdapter = new NewsAdapter(null);
+        /* Create a new ReportsAdapter. It will be responsible for displaying the list's items */
+        final ReportsAdapter mAdapter = new ReportsAdapter(null);
 
         mViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
-                .get(NewsViewModel.class);
+                .get(ReportsViewModel.class);
 
-        mViewModel.getObservableNews().observe(this, list -> {
+        mViewModel.getObservableReports().observe(this, list -> {
             if (list != null) {
-                Log.d(LOG_TAG, "Updating the news list. " + list.size() + " elements.");
-                mAdapter.setList((ArrayList<News>) list);
+                Log.d(LOG_TAG, "Updating the reports list. " + list.size() + " elements.");
+                mAdapter.setList((ArrayList<Report>) list);
             }
         });
 
@@ -115,7 +120,7 @@ public class NewsFragment extends Fragment {
             ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
             /* If there is an ActionBar, set it's title */
             if (actionBar != null)
-                actionBar.setTitle(R.string.title_news);
+                actionBar.setTitle(R.string.title_reports);
         }
     }
 
