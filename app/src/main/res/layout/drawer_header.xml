@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:src="@mipmap/aldo_giovanni_giacomo"
-            android:scaleType="fitXY"/>
+            android:scaleType="centerCrop"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,9 +47,8 @@
                     android:id="@+id/circleView"
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
-
                     android:layout_alignParentTop="true"
-
+                    android:scaleType="centerCrop"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:src="@mipmap/fumagalli"
                     android:contentDescription="@string/profile_picture_description" />
