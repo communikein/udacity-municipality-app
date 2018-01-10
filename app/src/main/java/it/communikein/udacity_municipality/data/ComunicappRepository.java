@@ -1,6 +1,5 @@
 package it.communikein.udacity_municipality.data;
 
-import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
@@ -37,7 +36,7 @@ public class ComunicappRepository {
 
 
     @Inject
-    public ComunicappRepository(FirebaseFirestore firestore, Application application) {
+    public ComunicappRepository(FirebaseFirestore firestore) {
         this.firestore = firestore;
 
         mNews = new MutableLiveData<>();

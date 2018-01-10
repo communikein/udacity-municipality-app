@@ -25,7 +25,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.databinding.ActivityMainBinding;
-import it.communikein.udacity_municipality.ui.list.news.NewsEventsFragment;
+import it.communikein.udacity_municipality.ui.list.news.NewsFragment;
 import it.communikein.udacity_municipality.ui.list.pois.PoisFragment;
 
 public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector,
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
 
-    private ActivityMainBinding mBinding;
+    public ActivityMainBinding mBinding;
 
 
     private final List<Fragment> fragments = new ArrayList<>();
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     }
 
     private void buildFragmentsList() {
-        fragments.add(INDEX_FRAGMENT_NEWS, new NewsEventsFragment());
+        fragments.add(INDEX_FRAGMENT_NEWS, new NewsFragment());
         fragments.add(INDEX_FRAGMENT_POIS, new PoisFragment());
     }
 
@@ -153,6 +153,19 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         userImageView.setImageResource(R.mipmap.fumagalli);
         userNameTextView.setText("Brambilla Fumagalli");
         userEmailTextView.setText("brambilla.fumagalli@gmail.com");
+    }
+
+
+    public void hideTabsLayout() {
+        mBinding.tabs.setVisibility(View.GONE);
+    }
+
+    public void showTabsLayout(ArrayList<String> tabs) {
+        mBinding.tabs.setVisibility(View.VISIBLE);
+        mBinding.tabs.removeAllTabs();
+
+        for (String title : tabs)
+            mBinding.tabs.addTab(mBinding.tabs.newTab().setText(title));
     }
 
 

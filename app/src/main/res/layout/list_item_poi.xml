@@ -5,16 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="news"
-            type="it.communikein.udacity_municipality.data.model.News"/>
-        <variable name="callback"
-            type="it.communikein.udacity_municipality.ui.list.news.NewsEventsAdapter.NewsClickCallback"/>
+        <variable name="poi"
+            type="it.communikein.udacity_municipality.data.model.Poi"/>
     </data>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() ->  callback.onListItemClick(news.getId())}"
         app:cardUseCompatPadding="true">
 
         <android.support.constraint.ConstraintLayout
@@ -32,7 +29,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Lavori in corso" />
+                tools:text="Rome" />
 
             <TextView
                 android:id="@+id/description_textview"
@@ -42,7 +39,7 @@
                 app:layout_constraintTop_toBottomOf="@id/title_textview"
                 app:layout_constraintStart_toStartOf="@id/title_textview"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:text="Lavori in corso in Via Don Giovanni Bosco"
+                tools:text="Capitale d'Italia."
                 style="@style/TextAppearance.AppCompat.Caption"
                 android:textSize="16sp"/>
 
