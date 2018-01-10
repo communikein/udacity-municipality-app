@@ -1,34 +1,18 @@
 package it.communikein.udacity_municipality.data.login;
 
-import android.arch.lifecycle.AndroidViewModel;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.AndroidException;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,8 +21,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -47,23 +29,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-
-
 import org.json.JSONException;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import it.communikein.udacity_municipality.BuildConfig;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.data.model.User;
+
+import static java.security.AccessController.getContext;
 
 public class LoginFirebase extends AppCompatActivity {
 
     private static final String TAG = LoginFirebase.class.getSimpleName();
-    private static final String USER_PROFILE_URI = "USER_PROFILE_URI";
+    private final Activity activityFirebaseLogin = this;
     /* *************************************
      *              GOOGLE                 *
      ***************************************/
@@ -202,6 +177,7 @@ public class LoginFirebase extends AppCompatActivity {
                 Log.w(TAG, "Google sign in failed", e);
                 Toast.makeText(LoginFirebase.this, "Google sign in failed ... retry",
                         Toast.LENGTH_SHORT).show();
+                updateUI();
                 finish();
                 // ...
             }
@@ -209,77 +185,44 @@ public class LoginFirebase extends AppCompatActivity {
     }
 
 
+    private void askUserToServer(FirebaseUser mUser){
 
+        NetworkUtils.getServerTokenFromFirebase(mUser, new ResultsCallback() {
+            @Override
+            public void onSuccess(String token) {
+                if (token != null) {
+                    Log.d(TAG, "sendRequestToServer: " + token);
+                    String urlOfServer = NetworkUtils.retriveUrlOfServer(activityFirebaseLogin);
+                    NetworkUtils.getUserFromServerHttp(getBaseContext(), urlOfServer, token, new ResultsCallback() {
+                        @Override
+                        public void onSuccess(String result) {
+                            if (result != null) {
+                                try {
+                                    JsonUtils.setUserFromJson(result);
+                                    updateUI();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Log.e(TAG, "sendRequestToServer: error on parsing Json");
 
-    private void sendRequestToServer(FirebaseUser mUser){
-         final String idToken = null;
-        mUser.getIdToken(true)
-                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                    public void onComplete(@NonNull Task<GetTokenResult> task) {
-                        if (task.isSuccessful()) {
-                           String idToken = task.getResult().getToken();
-                            Log.d(TAG, "sendRequestToServer: "+idToken);
-                            String urlOfServer = retriveUrlOfServer();
-                            NetworkUtilsVolley.sendToken(getBaseContext(),urlOfServer,idToken,new VolleyCallback(){
-                                @Override
-                                public void onSuccess(String result){
-                                    if(result!=null) {
-                                        try {
-                                            JsonUtils.setUserFromJson(result);
-                                            updateUI();
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                            Log.e(TAG, "sendRequestToServer: error on parsing Json");
-
-                                        }
-                                        Log.d(TAG, "sendRequestToServer: User" + result);
-                                    }else{
-                                        Log.e(TAG, "sendRequestToServer: error user not authorized");
-                                        Toast.makeText(LoginFirebase.this, "User not authorized",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
                                 }
-                            });
+                                Log.d(TAG, "sendRequestToServer: User" + result);
+                            } else {
+                                Log.e(TAG, "sendRequestToServer: error user not authorized");
+                                Toast.makeText(LoginFirebase.this, "User not authorized",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    Toast.makeText(LoginFirebase.this, "ID TOKEN NOT AVAILABLE",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
                             // ...
-                        } else {
-                            Toast.makeText(LoginFirebase.this, "failed to send request to server.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-
     }
 
-
-    public String retriveUrlOfServer(){
-        long cacheExpiration = 3600;
-
-        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setDeveloperModeEnabled(BuildConfig.DEBUG)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettings(configSettings);
-
-        if (mFirebaseRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
-            cacheExpiration = 0;
-        }
-
-        mFirebaseRemoteConfig.fetch(cacheExpiration)
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "retriveUrlOfServer: Fetch succed");
-                            mFirebaseRemoteConfig.activateFetched();
-                        } else {
-                            Log.e(TAG, "retriveUrlOfServer: Fetch Failed");
-                        }
-                    }
-                });
-
-        return mFirebaseRemoteConfig.getString(USER_PROFILE_URI);
-    }
 
     // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -293,12 +236,13 @@ public class LoginFirebase extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            sendRequestToServer(user);
+                            askUserToServer(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed - Maybe you are not connected.", Snackbar.LENGTH_SHORT).show();
                             updateUI();
+                            finish();
                         }
                     }
                 });

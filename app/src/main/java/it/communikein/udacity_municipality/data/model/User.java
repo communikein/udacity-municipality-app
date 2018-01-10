@@ -13,7 +13,7 @@ public class User {
     private String email;
     private typeOfUser type;
     private boolean logged;
-
+    private String Uid;
 
     private User() {
         setLogged(false);
@@ -31,6 +31,10 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getUid() {
+        return Uid;
     }
 
     public String getEmail() {
@@ -51,6 +55,10 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setUid(String Uid) {
+        this.email = Uid;
     }
 
     public void setType(typeOfUser type) {
