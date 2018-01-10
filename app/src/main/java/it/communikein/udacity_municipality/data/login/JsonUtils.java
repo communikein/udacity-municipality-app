@@ -26,7 +26,7 @@ public class JsonUtils {
         user.setUid(Uid);
     }
 
-    public static JSONObject UserToJson (String name, String email, String uid, User.typeOfUser roleOfUser){
+    public static JSONObject userToJson (String name, String email, String uid, User.typeOfUser roleOfUser){
 
         JSONObject mainObject = new JSONObject();
         try {
