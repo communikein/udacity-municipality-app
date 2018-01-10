@@ -86,7 +86,7 @@ public class PoisListFragment extends Fragment implements PoisListAdapter.OnList
     }
 
     @Override
-    public void onListItemClick(Poi poi) {
+    public void onListPoiClick(Poi poi) {
 
     }
 }
