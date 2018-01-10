@@ -47,10 +47,12 @@
 
         <android.support.design.widget.NavigationView
             android:id="@+id/navigation"
-            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_width="280dp"
             android:layout_gravity="start"
             app:headerLayout="@layout/drawer_header"
+            app:itemBackground="@drawable/navigation_drawer_item_background"
+            app:itemIconTint="@color/iconColor"
             app:menu="@menu/bottom_navigation" />
 
     </android.support.v4.widget.DrawerLayout>

@@ -2,6 +2,7 @@ package it.communikein.udacity_municipality.ui;
 
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -12,6 +13,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
 
     public ActivityMainBinding mBinding;
-
 
     private final List<Fragment> fragments = new ArrayList<>();
 
@@ -74,6 +76,20 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
     private void initUI(Bundle savedInstanceState) {
         buildFragmentsList();
+
+        Window w = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+
+        /*
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            w.setNavigationBarColor(getColor(R.color.colorPrimary));
+        }
+        */
 
         setSupportActionBar(mBinding.toolbar);
 
@@ -149,12 +165,13 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         ImageView userImageView = header.findViewById(R.id.circleView);
         TextView userNameTextView = header.findViewById(R.id.user_name_textview);
         TextView userEmailTextView = header.findViewById(R.id.user_email_textview);
+        ImageView userBackgroundView = header.findViewById(R.id.backgroundView);
 
         userImageView.setImageResource(R.mipmap.fumagalli);
-        userNameTextView.setText("Brambilla Fumagalli");
-        userEmailTextView.setText("brambilla.fumagalli@gmail.com");
+        userNameTextView.setText(getString(R.string.holder_user_name));
+        userEmailTextView.setText(getString(R.string.holder_user_email));
+        userBackgroundView.setImageResource(R.mipmap.aldo_giovanni_giacomo);
     }
-
 
     public void hideTabsLayout() {
         mBinding.tabs.setVisibility(View.GONE);
@@ -167,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         for (String title : tabs)
             mBinding.tabs.addTab(mBinding.tabs.newTab().setText(title));
     }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -218,8 +234,14 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             mBinding.navigation.getMenu().getItem(i).setChecked(false);
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        if (mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public DispatchingAndroidInjector<Fragment> supportFragmentInjector() {
