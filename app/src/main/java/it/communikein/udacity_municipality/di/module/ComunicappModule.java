@@ -1,6 +1,5 @@
 package it.communikein.udacity_municipality.di.module;
 
-import android.app.Application;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -14,8 +13,8 @@ import it.communikein.udacity_municipality.data.ComunicappRepository;
 public class ComunicappModule {
 
     @Singleton @Provides
-    ComunicappRepository provideRepository(FirebaseFirestore firestore, Application application) {
-        return new ComunicappRepository(firestore, application);
+    ComunicappRepository provideRepository(FirebaseFirestore firestore) {
+        return new ComunicappRepository(firestore);
     }
 
     @Singleton @Provides
