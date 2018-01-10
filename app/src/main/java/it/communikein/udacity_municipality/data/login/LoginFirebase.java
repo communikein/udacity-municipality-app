@@ -1,6 +1,7 @@
 package it.communikein.udacity_municipality.data.login;
 
 import android.arch.lifecycle.AndroidViewModel;
+import android.content.Context;
 import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
@@ -18,6 +19,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.auth.api.Auth;
@@ -37,15 +45,25 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 
+import org.json.JSONException;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import it.communikein.udacity_municipality.BuildConfig;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.data.model.User;
 
 public class LoginFirebase extends AppCompatActivity {
 
     private static final String TAG = LoginFirebase.class.getSimpleName();
+    private static final String USER_PROFILE_URI = "USER_PROFILE_URI";
     /* *************************************
      *              GOOGLE                 *
      ***************************************/
@@ -82,6 +100,7 @@ public class LoginFirebase extends AppCompatActivity {
     private EditText mPasswordField;
     private Button mSignUpButton;
     private User userLogged;
+    String idToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +160,9 @@ public class LoginFirebase extends AppCompatActivity {
         userLogged.setLogged(false);
         updateUI();
     }
+
+
+
     private void updateUI() {
 
         if (userLogged.isLogged()) {
@@ -178,14 +200,90 @@ public class LoginFirebase extends AppCompatActivity {
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
+                Toast.makeText(LoginFirebase.this, "Google sign in failed ... retry",
+                        Toast.LENGTH_SHORT).show();
+                finish();
                 // ...
             }
         }
     }
 
 
+
+
+    private void sendRequestToServer(FirebaseUser mUser){
+         final String idToken = null;
+        mUser.getIdToken(true)
+                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+                        if (task.isSuccessful()) {
+                           String idToken = task.getResult().getToken();
+                            Log.d(TAG, "sendRequestToServer: "+idToken);
+                            String urlOfServer = retriveUrlOfServer();
+                            NetworkUtilsVolley.sendToken(getBaseContext(),urlOfServer,idToken,new VolleyCallback(){
+                                @Override
+                                public void onSuccess(String result){
+                                    if(result!=null) {
+                                        try {
+                                            JsonUtils.setUserFromJson(result);
+                                            updateUI();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            Log.e(TAG, "sendRequestToServer: error on parsing Json");
+
+                                        }
+                                        Log.d(TAG, "sendRequestToServer: User" + result);
+                                    }else{
+                                        Log.e(TAG, "sendRequestToServer: error user not authorized");
+                                        Toast.makeText(LoginFirebase.this, "User not authorized",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                            // ...
+                        } else {
+                            Toast.makeText(LoginFirebase.this, "failed to send request to server.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+
+    }
+
+
+    public String retriveUrlOfServer(){
+        long cacheExpiration = 3600;
+
+        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettings(configSettings);
+
+        if (mFirebaseRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
+            cacheExpiration = 0;
+        }
+
+        mFirebaseRemoteConfig.fetch(cacheExpiration)
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "retriveUrlOfServer: Fetch succed");
+                            mFirebaseRemoteConfig.activateFetched();
+                        } else {
+                            Log.e(TAG, "retriveUrlOfServer: Fetch Failed");
+                        }
+                    }
+                });
+
+        return mFirebaseRemoteConfig.getString(USER_PROFILE_URI);
+    }
+
     // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -195,11 +293,11 @@ public class LoginFirebase extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            onAuthSuccess(user);
+                            sendRequestToServer(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed - Maybe you are not connected.", Snackbar.LENGTH_SHORT).show();
                             updateUI();
                         }
                     }
@@ -215,12 +313,7 @@ public class LoginFirebase extends AppCompatActivity {
     }
 
 
-    private void writeNewUser(String userId, String name, String email) {
-        userLogged.setEmail(email);
-        userLogged.setType(User.typeOfUser.Citizien);
-        userLogged.setLogged(true);
-        userLogged.setUsername(name);
-    }
+
     private void signInAnonymously() {
 
         // [START signin_anonymously]
@@ -248,15 +341,7 @@ public class LoginFirebase extends AppCompatActivity {
                 });
         // [END signin_anonymously]
     }
-    private void onAuthSuccess(FirebaseUser user) {
-        String username = usernameFromEmail(user.getEmail());
-        writeNewUser(user.getUid(), username, user.getEmail());
-        updateUI();
-    }
 
-    public User returnUserLogged(){
-        return userLogged;
-    }
     private void signOut() {
         // Firebase sign out
         mAuth.signOut();
@@ -285,7 +370,7 @@ public class LoginFirebase extends AppCompatActivity {
                 Toast.makeText(LoginFirebase.this, "Authentication Anonimous is okay.",
                         Toast.LENGTH_SHORT).show();
             }else{
-                onAuthSuccess(currentUser);
+                updateUI();
             }
             //
         }else{
