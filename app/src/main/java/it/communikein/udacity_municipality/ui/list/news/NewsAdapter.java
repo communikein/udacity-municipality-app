@@ -15,10 +15,22 @@ import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.data.model.Event;
 import it.communikein.udacity_municipality.data.model.News;
 import it.communikein.udacity_municipality.databinding.ListItemNewsBinding;
+import it.communikein.udacity_municipality.databinding.ListItemNewsBigBinding;
 import it.communikein.udacity_municipality.ui.list.news.NewsAdapter.NewsViewHolder;
 import it.communikein.udacity_municipality.utilities.ComunicappDateUtils;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
+
+    private static final int VIEW_TYPE_BIG = 0;
+    private static final int VIEW_TYPE_NORMAL = 1;
+
+    /*
+     * Flag to determine if we want to use a separate view for the list item that represents
+     * today. This flag will be true when the phone is in portrait mode and false when the phone
+     * is in landscape. This flag will be set in the constructor of the adapter by accessing
+     * boolean resources.
+     */
+    private boolean mUseTodayLayout;
 
     private ArrayList<News> mList;
     private Context mContext;
@@ -42,28 +54,48 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
     @Override
     public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ListItemNewsBinding mBinding = DataBindingUtil
-                .inflate(LayoutInflater.from(parent.getContext()), R.layout.list_item_news,
-                        parent, false);
+        switch (viewType) {
+            case VIEW_TYPE_BIG:
+                ListItemNewsBigBinding mBindingBig = DataBindingUtil
+                        .inflate(LayoutInflater.from(parent.getContext()),
+                                R.layout.list_item_news_big,
+                                parent,
+                                false);
 
-        return new NewsViewHolder(mBinding);
+                return new NewsViewHolder(mBindingBig);
+
+            case VIEW_TYPE_NORMAL:
+                ListItemNewsBinding mBinding = DataBindingUtil
+                        .inflate(LayoutInflater.from(parent.getContext()),
+                                R.layout.list_item_news,
+                                parent,
+                                false);
+
+                return new NewsViewHolder(mBinding);
+
+            default:
+                throw new IllegalArgumentException("Invalid view type, value of " + viewType);
+        }
     }
 
     @Override
     public void onBindViewHolder(NewsViewHolder holder, int position) {
         News news = mList.get(position);
 
-        String friendly_date = ComunicappDateUtils
-                .getFriendlyDateString(mContext, news.getTimestamp(), true, true);
-
-        holder.mBinding.setNews(news);
-        holder.mBinding.timestampTextview.setText(friendly_date);
-        holder.mBinding.titleTextview.setText(news.getTitle());
+        holder.bindData(news);
     }
 
     @Override
     public int getItemCount() {
         return mList == null ? 0 : mList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0)
+            return VIEW_TYPE_BIG;
+        else
+            return VIEW_TYPE_NORMAL;
     }
 
 
@@ -104,25 +136,56 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
     class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        final ListItemNewsBinding mBinding;
+        private ListItemNewsBinding mBinding = null;
+        private ListItemNewsBigBinding mBindingBig = null;
 
         NewsViewHolder(ListItemNewsBinding binding) {
             super(binding.getRoot());
 
             binding.getRoot().setOnClickListener(this);
+            binding.getRoot().setFocusable(true);
 
             this.mBinding = binding;
         }
 
+        NewsViewHolder(ListItemNewsBigBinding binding) {
+            super(binding.getRoot());
+
+            binding.getRoot().setOnClickListener(this);
+            binding.getRoot().setFocusable(true);
+
+            this.mBindingBig = binding;
+        }
+
         @Override
         public void onClick(View v) {
-            News clicked = mBinding.getNews();
+            News clicked;
+            if (mBinding != null)
+                clicked = mBinding.getNews();
+            else
+                clicked = mBindingBig.getNews();
 
             if (mOnClickListener != null) {
                 if (clicked instanceof Event)
                     mOnClickListener.onListEventClick((Event) clicked);
                 else
                     mOnClickListener.onListNewsClick(clicked);
+            }
+        }
+
+        public void bindData(News news) {
+            String friendly_date = ComunicappDateUtils
+                    .getFriendlyDateString(mContext, news.getTimestamp(), true, true);
+
+            if (mBinding != null) {
+                mBinding.setNews(news);
+                mBinding.timestampTextview.setText(friendly_date);
+                mBinding.titleTextview.setText(news.getTitle());
+            }
+            else {
+                mBindingBig.setNews(news);
+                mBindingBig.timestampTextview.setText(friendly_date);
+                mBindingBig.titleTextview.setText(news.getTitle());
             }
         }
     }

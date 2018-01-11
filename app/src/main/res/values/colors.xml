@@ -9,5 +9,5 @@
 
     <color name="iconColor">#c7c6c2</color>
     <color name="selectedNavItemBackground">#e8effa</color>
-    <color name="selectedNavItemText">#333333 </color>
+    <color name="selectedNavItemText">#333333</color>
 </resources>

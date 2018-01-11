@@ -1,6 +1,7 @@
 package it.communikein.udacity_municipality.ui.list.pois;
 
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import it.communikein.udacity_municipality.R;
 import it.communikein.udacity_municipality.data.model.Poi;
 import it.communikein.udacity_municipality.databinding.SimpleListBinding;
+import it.communikein.udacity_municipality.ui.detail.PoiDetailActivity;
 import it.communikein.udacity_municipality.viewmodel.PoisViewModel;
 
 /**
@@ -87,6 +89,7 @@ public class PoisListFragment extends Fragment implements PoisListAdapter.OnList
 
     @Override
     public void onListPoiClick(Poi poi) {
-
+        Intent intent = new Intent(getActivity(), PoiDetailActivity.class);
+        startActivity(intent);
     }
 }
