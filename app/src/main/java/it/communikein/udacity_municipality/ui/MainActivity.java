@@ -46,10 +46,12 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
 
     public static String FRAGMENT_SELECTED_TAG;
 
-    private static final int INDEX_FRAGMENT_NEWS = 0;
-    private static final int INDEX_FRAGMENT_REPORTS = 1;
-    private static final int INDEX_FRAGMENT_POIS = 2;
+    private static final int INDEX_FRAGMENT_HOME = 0;
+    private static final int INDEX_FRAGMENT_NEWS = 1;
+    private static final int INDEX_FRAGMENT_REPORTS = 2;
+    private static final int INDEX_FRAGMENT_POIS = 3;
 
+    public static final String TAG_FRAGMENT_HOME = "tab-home";
     public static final String TAG_FRAGMENT_NEWS = "tab-news";
     public static final String TAG_FRAGMENT_REPORTS = "tab-reports";
     public static final String TAG_FRAGMENT_POIS = "tab-pois";
@@ -103,16 +105,19 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     }
 
     private void buildFragmentsList() {
+        fragments.add(INDEX_FRAGMENT_HOME, new HomeFragment());
         fragments.add(INDEX_FRAGMENT_NEWS, new NewsFragment());
         fragments.add(INDEX_FRAGMENT_REPORTS, new ReportsFragment());
         fragments.add(INDEX_FRAGMENT_POIS, new PoisFragment());
     }
 
     private boolean navigate(int tab_id) {
-        int index = INDEX_FRAGMENT_NEWS;
+        int index;
 
         switch (tab_id) {
             case R.id.navigation_home:
+                index = INDEX_FRAGMENT_HOME;
+                FRAGMENT_SELECTED_TAG = TAG_FRAGMENT_HOME;
                 break;
 
             case R.id.navigation_news:
