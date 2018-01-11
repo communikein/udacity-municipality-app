@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/nav_home_group">
+    <group
+        android:checkableBehavior="single"
+        android:id="@+id/navigation_home_group">
 
         <item
             android:id="@+id/navigation_home"
@@ -13,19 +14,19 @@
 
     </group>
 
-    <group android:checkableBehavior="single"
+    <group
+        android:checkableBehavior="single"
         android:id="@+id/nav_main_group">
 
         <item
-            android:id="@+id/navigation_news_and_events"
+            android:id="@+id/navigation_news"
             android:icon="@drawable/ic_account_balance_black_24dp"
-            android:title="@string/title_news_and_events"
-            />
+            android:title="@string/title_news" />
 
         <item
-            android:id="@+id/nav_reportings"
+            android:id="@+id/navigation_reports"
             android:icon="@drawable/ic_report_problem_black_24dp"
-            android:title="@string/title_reportings" />
+            android:title="@string/title_reports" />
 
         <item
             android:id="@+id/navigation_pois"
@@ -34,17 +35,20 @@
 
     </group>
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/nav_pref_group">
+    <group
+        android:checkableBehavior="single"
+        android:id="@+id/navigation_pref_group">
+
         <item
-            android:id="@+id/nav_share"
+            android:id="@+id/navigation_share"
             android:title="@string/title_share"
-            android:icon="@drawable/ic_share_black_24dp"/>
+            android:icon="@drawable/ic_share_black_24dp" />
+
         <item
-            android:id="@+id/nav_settings"
+            android:id="@+id/navigation_settings"
             android:title="@string/title_settings"
-            android:icon="@drawable/ic_settings_black_24dp"
-            />
+            android:icon="@drawable/ic_settings_black_24dp" />
+
     </group>
 
 </menu>

@@ -3,6 +3,7 @@ package it.communikein.udacity_municipality.ui.list.reports;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import it.communikein.udacity_municipality.data.model.News;
 import it.communikein.udacity_municipality.data.model.Report;
 import it.communikein.udacity_municipality.databinding.SimpleListBinding;
 import it.communikein.udacity_municipality.ui.MainActivity;
+import it.communikein.udacity_municipality.ui.detail.ReportDetailActivity;
 import it.communikein.udacity_municipality.ui.list.news.NewsAdapter;
 import it.communikein.udacity_municipality.ui.list.news.NewsFragment;
 import it.communikein.udacity_municipality.viewmodel.NewsViewModel;
@@ -35,7 +37,7 @@ import it.communikein.udacity_municipality.viewmodel.factory.ReportsViewModelFac
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ReportsFragment extends Fragment {
+public class ReportsFragment extends Fragment implements ReportsAdapter.ReportClickCallback {
 
     private static final String LOG_TAG = NewsFragment.class.getSimpleName();
 
@@ -141,4 +143,9 @@ public class ReportsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onListReportClick(Report report) {
+        Intent intent = new Intent(getActivity(), ReportDetailActivity.class);
+        startActivity(intent);
+    }
 }

@@ -3,9 +3,8 @@
 
     <string name="title_home">Home</string>
     <string name="title_news">News</string>
-    <string name="title_reports">Reports</string>
-    <string name="title_pois">POIs</string>
-    <string name="title_reportings">Segnalazioni</string>
+    <string name="title_reports">Segnalazioni</string>
+    <string name="title_pois">Punti di Interesse</string>
     <string name="title_share">Condividi</string>
     <string name="title_settings">Impostazioni</string>
 
