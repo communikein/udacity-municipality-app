@@ -91,9 +91,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         }
 
         /*
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             w.setNavigationBarColor(getColor(R.color.colorPrimary));
-        }
         */
 
         setSupportActionBar(mBinding.toolbar);

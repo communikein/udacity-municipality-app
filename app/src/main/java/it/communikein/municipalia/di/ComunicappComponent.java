@@ -8,14 +8,16 @@ import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.support.AndroidSupportInjectionModule;
 import it.communikein.municipalia.ComunicApp;
-import it.communikein.municipalia.di.module.ActivitiesModule;
+import it.communikein.municipalia.di.module.MainActivityModule;
 import it.communikein.municipalia.di.module.ComunicappModule;
+import it.communikein.municipalia.di.module.NewsDetailActivityModule;
 
 @Singleton
 @Component(modules = {
         AndroidSupportInjectionModule.class,
         ComunicappModule.class,
-        ActivitiesModule.class})
+        MainActivityModule.class,
+        NewsDetailActivityModule.class})
 public interface ComunicappComponent {
 
     @Component.Builder

@@ -10,22 +10,25 @@ import java.util.Map;
 
 public class News {
 
-    private static final String ARG_ID = "id";
+    public static final String ARG_ID = "id";
     private static final String ARG_TITLE = "title";
     private static final String ARG_DESCRIPTION = "description";
+    private static final String ARG_IMAGE = "image";
     private static final String ARG_TIMESTAMP = "timestamp";
 
     @NonNull
     private String id;
     private String title;
     private String description;
+    private String image;
     private long timestamp;
 
 
-    public News(@NonNull String id, String title, String description, long timestamp) {
+    public News(@NonNull String id, String title, String description, String image, long timestamp) {
         setId(id);
         setTitle(title);
         setDescription(description);
+        setImage(image);
         setTimestamp(timestamp);
     }
 
@@ -36,6 +39,8 @@ public class News {
             setTitle(json.getString(ARG_TITLE));
         if (json.has(ARG_DESCRIPTION))
             setDescription(json.getString(ARG_DESCRIPTION));
+        if (json.has(ARG_IMAGE))
+            setImage(json.getString(ARG_IMAGE));
         if (json.has(ARG_TIMESTAMP))
             setTimestamp(json.getLong(ARG_TIMESTAMP));
     }
@@ -47,6 +52,8 @@ public class News {
             setTitle((String) map.get(ARG_TITLE));
         if (map.containsKey(ARG_DESCRIPTION))
             setDescription((String) map.get(ARG_DESCRIPTION));
+        if (map.containsKey(ARG_IMAGE))
+            setImage((String) map.get(ARG_IMAGE));
         if (map.containsKey(ARG_TIMESTAMP))
             setTimestamp(((Date) map.get(ARG_TIMESTAMP)).getTime());
     }
@@ -77,6 +84,14 @@ public class News {
         this.description = description;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public long getTimestamp() {
         return timestamp;
     }
@@ -93,6 +108,7 @@ public class News {
             obj.put(ARG_ID, getId());
             obj.put(ARG_TITLE, getTitle());
             obj.put(ARG_DESCRIPTION, getDescription());
+            obj.put(ARG_IMAGE, getImage());
             obj.put(ARG_TIMESTAMP, getTimestamp());
         } catch (JSONException e){
             obj = new JSONObject();
@@ -121,6 +137,7 @@ public class News {
         News news = (News) obj;
         return news.getTitle().equals(this.getTitle()) &&
                 news.getDescription().equals(this.getDescription()) &&
+                news.getImage().equals(this.getImage()) &&
                 news.getTimestamp() == this.getTimestamp();
     }
 }

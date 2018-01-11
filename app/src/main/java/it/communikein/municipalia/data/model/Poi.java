@@ -18,7 +18,7 @@ public class Poi extends News {
 
     public Poi(String id, String title, String description, long timestamp,
                double locationLat, double locationLng) {
-        super(id, title, description, timestamp);
+        super(id, title, description, null, timestamp);
 
         setLocationLat(locationLat);
         setLocationLng(locationLng);

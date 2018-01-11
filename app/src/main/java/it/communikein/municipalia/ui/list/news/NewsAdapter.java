@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import it.communikein.municipalia.R;
@@ -181,11 +183,19 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
                 mBinding.setNews(news);
                 mBinding.timestampTextview.setText(friendly_date);
                 mBinding.titleTextview.setText(news.getTitle());
+
+                Glide.with(mBinding.getRoot())
+                        .load(news.getImage())
+                        .into(mBinding.iconImageview);
             }
             else {
                 mBindingBig.setNews(news);
                 mBindingBig.timestampTextview.setText(friendly_date);
                 mBindingBig.titleTextview.setText(news.getTitle());
+
+                Glide.with(mBindingBig.getRoot())
+                        .load(news.getImage())
+                        .into(mBindingBig.iconImageview);
             }
         }
     }

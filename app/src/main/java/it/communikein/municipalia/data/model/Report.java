@@ -16,7 +16,7 @@ public class Report extends News {
 
     public Report(@NonNull String id, @NonNull String submitterId, String title, String description,
                   long timestamp) {
-        super(id, title, description, timestamp);
+        super(id, title, description, null, timestamp);
 
         setSubmitterId(submitterId);
     }

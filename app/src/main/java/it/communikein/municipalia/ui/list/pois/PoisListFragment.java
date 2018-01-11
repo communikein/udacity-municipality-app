@@ -81,6 +81,8 @@ public class PoisListFragment extends Fragment implements PoisListAdapter.OnList
                 mAdapter.setList((ArrayList<Poi>) list);
             }
         });
+
+        mBinding.fab.setVisibility(View.GONE);
     }
 
     public void setViewModel(PoisViewModel viewModel) {

@@ -20,9 +20,9 @@ public class Event extends News {
     private double locationLat;
     private double locationLng;
 
-    public Event(String id, String title, String description, long timestamp,
+    public Event(String id, String title, String description, String image, long timestamp,
                  long dateStart, long dateEnd, double locationLat, double locationLng) {
-        super(id, title, description, timestamp);
+        super(id, title, description, image, timestamp);
 
         setDateStart(dateStart);
         setDateEnd(dateEnd);

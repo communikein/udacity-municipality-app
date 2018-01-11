@@ -1,7 +1,6 @@
 package it.communikein.municipalia.utilities;
 
 import android.content.Context;
-import android.text.format.DateUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -14,12 +13,10 @@ import it.communikein.municipalia.R;
 
 public class ComunicappDateUtils {
 
-    public static final DateFormat date =
-            new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-    public static final DateFormat dateTime =
-            new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-    public static final DateFormat dateFile =
-            new SimpleDateFormat("ddMMyyyy", Locale.getDefault());
+    public static final DateFormat dateFormat =
+            new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+    public static final DateFormat dateTimeFormat =
+            new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.ITALY);
 
 
     private static long getNormalizedUtcMsForToday() {
@@ -145,34 +142,34 @@ public class ComunicappDateUtils {
         long daysFromEpochToToday = elapsedDaysSinceEpoch(System.currentTimeMillis());
 
         if (daysFromEpochToProvidedDate == daysFromEpochToToday || showFullDate) {
+            /* Get readable date */
+            String readableDate = getReadableDateString(localDate, showTime);
+
+            /* Insert the word 'time', between date and time, based on the language of the phone */
+            String result = readableDate.substring(0, readableDate.indexOf(" ")) + " ";
+            result += context.getString(R.string.time) + " " +
+                    readableDate.substring(readableDate.indexOf(" ") + 1);
+
             /*
-             * If the date we're building the String for is today's date, the format
-             * is "Today, June 24"
+             * If the date is yesterday, today or tomorrow, change the whole date with yesterday,
+             * today and tomorrow respectively
              */
-            String dayName = getDayName(context, localDate);
-            String readableDate = getReadableDateString(context, localDate, showTime);
-            if (daysFromEpochToProvidedDate - daysFromEpochToToday < 2) {
-                /*
-                 * Since there is no localized format that returns "Today" or "Tomorrow" in the API
-                 * levels we have to support, we take the name of the day (from SimpleDateFormat)
-                 * and use it to replace the date from MyunimibDateUtils. This isn't guaranteed to work,
-                 * but our testing so far has been conclusively positive.
-                 *
-                 * For information on a simpler API to use (on API > 18), please check out the
-                 * documentation on DateFormat#getBestDateTimePattern(Locale, String)
-                 * https://developer.android.com/reference/android/text/format/DateFormat.html#getBestDateTimePattern
-                 */
-                String localizedDayName = new SimpleDateFormat("EEEE").format(localDate);
-                return readableDate.replace(localizedDayName, dayName);
+            if (daysFromEpochToProvidedDate - daysFromEpochToToday < 2 &&
+                    daysFromEpochToProvidedDate - daysFromEpochToToday > -2) {
+                /* Get the day name: yesterday, today, tomorrow */
+                String dayName = getDayName(context, localDate);
+                String localizedDayName = dateFormat.format(localDate);
+
+                return result.replace(localizedDayName, dayName);
             } else {
-                return readableDate;
+                return result;
             }
         } else if (daysFromEpochToProvidedDate < daysFromEpochToToday + 7) {
             /* If the input date is less than a week in the future, just return the day name. */
             return getDayName(context, localDate);
         } else {
             /* If the input date is more than a week in the future, return the full date */
-            return getReadableDateString(context, localDate, showTime);
+            return getReadableDateString(localDate, showTime);
         }
     }
 
@@ -180,20 +177,17 @@ public class ComunicappDateUtils {
      * Returns a date string in the format specified, which shows an abbreviated date without a
      * year.
      *
-     * @param context      Used by MyunimibDateUtils to format the date in the current locale
      * @param timeInMillis Time in milliseconds since the epoch (local time)
      *
      * @return The formatted date string
      */
-    private static String getReadableDateString(Context context, long timeInMillis, boolean showTime) {
-        int flags = DateUtils.FORMAT_SHOW_DATE
-                | DateUtils.FORMAT_SHOW_YEAR
-                | DateUtils.FORMAT_ABBREV_ALL
-                | DateUtils.FORMAT_SHOW_WEEKDAY;
-        if (showTime)
-            flags = flags | DateUtils.FORMAT_SHOW_TIME;
+    private static String getReadableDateString(long timeInMillis, boolean showTime) {
+        Date date = new Date(timeInMillis);
 
-        return DateUtils.formatDateTime(context, timeInMillis, flags);
+        if (showTime)
+            return dateTimeFormat.format(date);
+        else
+            return dateFormat.format(date);
     }
 
     /**

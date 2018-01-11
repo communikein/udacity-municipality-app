@@ -143,6 +143,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsClickCallb
     @Override
     public void onListNewsClick(News news) {
         Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
+        intent.putExtra(News.ARG_ID, news.getId());
         startActivity(intent);
     }
 

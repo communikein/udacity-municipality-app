@@ -62,7 +62,6 @@ public class HomeFragment extends Fragment {
         hideTabs();
 
         initViewModel();
-        initFab();
     }
 
     private void hideTabs() {
@@ -99,10 +98,6 @@ public class HomeFragment extends Fragment {
                 // TODO: do something with the reports
             }
         });
-    }
-
-    private void initFab() {
-        mBinding.fab.setVisibility(View.GONE);
     }
 
     /**
