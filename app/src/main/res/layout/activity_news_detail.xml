@@ -6,7 +6,7 @@
 
     <data>
         <variable name="news"
-            type="it.communikein.udacity_municipality.data.model.News"/>
+            type="it.communikein.municipalia.data.model.News"/>
     </data>
 
     <android.support.design.widget.CoordinatorLayout

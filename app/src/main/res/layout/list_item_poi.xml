@@ -6,7 +6,7 @@
 
     <data>
         <variable name="poi"
-            type="it.communikein.udacity_municipality.data.model.Poi"/>
+            type="it.communikein.municipalia.data.model.Poi"/>
     </data>
 
     <android.support.v7.widget.CardView
