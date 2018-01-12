@@ -139,8 +139,9 @@ public class ComunicappRepository {
         return mReports;
     }
 
+
     public LiveData<News> getObservableNews(String id) {
-        MutableLiveData<News> news = new MutableLiveData<>();
+        MutableLiveData<News> newsDetail = new MutableLiveData<>();
 
         DocumentReference reference = firestore.collection(NEWS_COLLECTION).document(id);
         reference.addSnapshotListener((documentSnapshot, e) -> {
@@ -149,9 +150,57 @@ public class ComunicappRepository {
                 return;
             }
 
-            news.postValue(new News(id, documentSnapshot.getData()));
+            newsDetail.postValue(new News(id, documentSnapshot.getData()));
         });
 
-        return news;
+        return newsDetail;
+    }
+
+    public LiveData<Poi> getObservablePoi(String id) {
+        MutableLiveData<Poi> poiDetails = new MutableLiveData<>();
+
+        DocumentReference reference = firestore.collection(POIS_COLLECTION).document(id);
+        reference.addSnapshotListener((documentSnapshot, e) -> {
+            if (e != null) {
+                Log.w(LOG_TAG, "Listen to poi failed.", e);
+                return;
+            }
+
+            poiDetails.postValue(new Poi(id, documentSnapshot.getData()));
+        });
+
+        return poiDetails;
+    }
+
+    public LiveData<Report> getObservableReport(String id) {
+        MutableLiveData<Report> reportDetails = new MutableLiveData<>();
+
+        DocumentReference reference = firestore.collection(REPORTS_COLLECTION).document(id);
+        reference.addSnapshotListener((documentSnapshot, e) -> {
+            if (e != null) {
+                Log.w(LOG_TAG, "Listen to report failed.", e);
+                return;
+            }
+
+            reportDetails.postValue(new Report(id, documentSnapshot.getData()));
+        });
+
+        return reportDetails;
+    }
+
+    public LiveData<Event> getObservableEvent(String id) {
+        MutableLiveData<Event> eventDetails = new MutableLiveData<>();
+
+        DocumentReference reference = firestore.collection(EVENTS_COLLECTION).document(id);
+        reference.addSnapshotListener((documentSnapshot, e) -> {
+            if (e != null) {
+                Log.w(LOG_TAG, "Listen to event failed.", e);
+                return;
+            }
+
+            eventDetails.postValue(new Event(id, documentSnapshot.getData()));
+        });
+
+        return eventDetails;
     }
 }
