@@ -1,21 +1,29 @@
 <resources>
 
+    <style name="Theme.Comunicapp" parent="Base.Theme.Comunicapp" />
+
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Base.Theme.Comunicapp" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_white</item>
     </style>
 
+    <style name="Theme.Comunicapp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="ThemeOverlay.MyTitleText" parent="AppTheme">
+    <style name="Theme.Comunicapp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="ThemeOverlay.MyTitleText" parent="Theme.Comunicapp">
         <item name="android:gravity">center</item>
         <item name="android:textSize">36sp</item>
     </style>
 
     <!-- Activity with no Title -->
-    <style name="ThemeOverlay.MyNoTitleActivity" parent="AppTheme">
+    <style name="ThemeOverlay.MyNoTitleActivity" parent="Theme.Comunicapp">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -31,7 +39,7 @@
     <!-- Light EditTexts -->
     <style name="ThemeOverlay.MyLightEditText" parent="ThemeOverlay.AppCompat.Dark"/>
 
-    <style name="ThemeOverlay.MyTextDetail" parent="AppTheme">
+    <style name="ThemeOverlay.MyTextDetail" parent="Theme.Comunicapp">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fadeScrollbars">true</item>

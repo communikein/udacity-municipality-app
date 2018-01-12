@@ -29,6 +29,7 @@ build/
 .navigation
 captures/
 output.json 
+app/google-services.json
 
 #NDK
 obj/

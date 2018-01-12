@@ -2,11 +2,11 @@
     <string name="app_name">udacity-municipality</string>
 
     <string name="title_home">Home</string>
-    <string name="title_news_and_events"><![CDATA[News & Events]]></string>
-    <string name="title_pois">POIs</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_news">News</string>
+    <string name="title_reports">Segnalazioni</string>
+    <string name="title_pois">Punti di Interesse</string>
+    <string name="title_share">Condividi</string>
+    <string name="title_settings">Impostazioni</string>
 
     <!--for Firebase Login -->
     <string name="disconnect">Disconnect</string>
@@ -21,4 +21,37 @@
     <string name="sign_up">Sign Up</string>
     <string name="hint_password">password</string>
     <string name="hint_email">email</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="holder_user_name">Brambilla Fumagalli</string>
+    <string name="holder_user_email">brambilla.fumagalli@gmail.com</string>
+    <string name="profile_picture_description">User\'s profile picture</string>
+    <string name="long_text">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse accumsan varius massa
+        in finibus. Vestibulum elit arcu, malesuada id consectetur sed, maximus ac arcu. Phasellus
+        quis nisl purus. Sed auctor ipsum sed lectus tincidunt convallis. Donec dignissim varius
+        tincidunt. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
+        turpis egestas. Etiam tristique augue ac lacus scelerisque, vel viverra mauris maximus.\n
+        \n
+        Quisque commodo non lorem ac convallis. Suspendisse erat sapien, porttitor id viverra nec,
+        bibendum a purus. Curabitur magna quam, porta vel ligula eu, interdum efficitur est.
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
+        Nulla nunc odio, ullamcorper consectetur odio nec, aliquam sollicitudin arcu. Sed suscipit
+        volutpat est eu convallis. Sed ut fermentum ligula. Pellentesque sed rutrum felis.\n
+        \n
+        Fusce a justo in sapien condimentum imperdiet vitae ac turpis. Aliquam erat volutpat.
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
+        egestas. Vestibulum cursus tortor purus, vel imperdiet metus aliquet ut. Ut posuere varius
+        turpis, eget interdum mi viverra sit amet. Aenean felis arcu, pulvinar nec sodales quis,
+        suscipit ut nunc. Mauris ac condimentum purus. Pellentesque finibus fringilla lacus, quis
+        tincidunt tellus fringilla vel. Maecenas consectetur, dolor consequat dapibus eleifend,
+        purus magna venenatis sem, at fermentum erat est vitae odio. Quisque cursus sed risus eu
+        porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
+        himenaeos.\n
+        \n
+    </string>
+    <string name="yesterday">Yesterday</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="time">ore</string>
 </resources>
