@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.communikein.udacity_municipality">
+    package="it.communikein.municipalia">
 
     <!-- Required to manage the UNIMIB account as a local account. -->
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
@@ -44,10 +44,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".data.login.LoginFirebase">
-
+        <activity android:name=".data.login.LoginFirebase"
             android:parentActivityName="ui.MainActivity" >
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />

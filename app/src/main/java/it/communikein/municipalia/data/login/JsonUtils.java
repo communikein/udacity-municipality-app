@@ -1,9 +1,9 @@
-package it.communikein.udacity_municipality.data.login;
+package it.communikein.municipalia.data.login;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import it.communikein.udacity_municipality.data.model.User;
+import it.communikein.municipalia.data.model.User;
 
 /**
  * Created by F63801B on 10/01/2018.

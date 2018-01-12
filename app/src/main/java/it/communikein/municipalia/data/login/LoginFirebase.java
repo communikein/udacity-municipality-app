@@ -1,4 +1,4 @@
-package it.communikein.udacity_municipality.data.login;
+package it.communikein.municipalia.data.login;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -30,10 +30,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 import org.json.JSONException;
-import it.communikein.udacity_municipality.R;
-import it.communikein.udacity_municipality.data.model.User;
+import it.communikein.municipalia.R;
+import it.communikein.municipalia.data.login.JsonUtils;
+import it.communikein.municipalia.data.login.NetworkUtils;
+import it.communikein.municipalia.data.login.ResultsCallback;
+import it.communikein.municipalia.data.model.User;
 
 import static java.security.AccessController.getContext;
+
+import it.communikein.municipalia.data.login.NetworkUtils.*;
 
 public class LoginFirebase extends AppCompatActivity {
 

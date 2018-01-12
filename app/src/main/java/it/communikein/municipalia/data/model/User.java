@@ -1,4 +1,4 @@
-package it.communikein.udacity_municipality.data.model;
+package it.communikein.municipalia.data.model;
 
 import android.provider.CalendarContract;
 

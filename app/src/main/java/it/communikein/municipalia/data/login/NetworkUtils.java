@@ -1,4 +1,4 @@
-package it.communikein.udacity_municipality.data.login;
+package it.communikein.municipalia.data.login;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,16 +25,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.communikein.udacity_municipality.BuildConfig;
-
-/**
- * Created by Francesco Antonio Reale (francescoa.reale@gmail.com) on 09/01/2018.
- */
-
-interface ResultsCallback {
-    void onSuccess(String result);
-}
-
+import it.communikein.municipalia.BuildConfig;
 
 public class NetworkUtils {
 
