@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import it.communikein.municipalia.R;
 import it.communikein.municipalia.data.model.News;
 import it.communikein.municipalia.databinding.ActivityNewsDetailBinding;
 import it.communikein.municipalia.utilities.ComunicappDateUtils;
-import it.communikein.municipalia.viewmodel.HomeViewModel;
 import it.communikein.municipalia.viewmodel.NewsDetailViewModel;
 import it.communikein.municipalia.viewmodel.factory.NewsDetailViewModelFactory;
 
