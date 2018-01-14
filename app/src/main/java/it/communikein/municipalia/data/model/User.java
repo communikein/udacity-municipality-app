@@ -14,6 +14,15 @@ public class User {
     private typeOfUser type;
     private boolean logged;
     private String Uid;
+    public String ImgLink;
+
+    public String getImgLink() {
+        return ImgLink;
+    }
+
+    public void setImg(String ImgLink) {
+        this.ImgLink = ImgLink;
+    }
 
     private User() {
         setLogged(false);
@@ -58,7 +67,7 @@ public class User {
     }
 
     public void setUid(String Uid) {
-        this.email = Uid;
+        this.Uid = Uid;
     }
 
     public void setType(typeOfUser type) {

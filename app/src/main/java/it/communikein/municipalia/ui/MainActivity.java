@@ -1,5 +1,8 @@
 package it.communikein.municipalia.ui;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
@@ -11,12 +14,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +40,17 @@ import dagger.android.AndroidInjection;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import it.communikein.municipalia.R;
+import it.communikein.municipalia.data.login.DialogLogIn;
+import it.communikein.municipalia.data.login.JsonUtils;
+import it.communikein.municipalia.data.login.LoginFirebase;
+import it.communikein.municipalia.data.login.ResultsCallback;
+import it.communikein.municipalia.data.model.User;
 import it.communikein.municipalia.databinding.ActivityMainBinding;
 import it.communikein.municipalia.ui.list.news.NewsFragment;
 import it.communikein.municipalia.ui.list.pois.PoisFragment;
 import it.communikein.municipalia.ui.list.reports.ReportsFragment;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector,
         NavigationView.OnNavigationItemSelectedListener {
@@ -69,8 +89,19 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         super.onCreate(savedInstanceState);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        LoginFirebase.getInstance().setActivityLogin(this);
 
         initUI(savedInstanceState);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // If the user is not Logged sign in Anonymously
+        // if yes update the interface
+        if(LoginFirebase.getInstance().VerifyAlreadyLog()){
+                UpdateHeader();
+        }
     }
 
     @Override
@@ -78,7 +109,52 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         outState.putInt(DRAWER_ITEM_SELECTED, drawerItemSelectedId);
         super.onSaveInstanceState(outState);
     }
+    private View.OnClickListener buttonListener = new View.OnClickListener() {
+        public void onClick(View v) {
 
+            int i = v.getId();
+            if (i == R.id.sign_in_button) {
+               LoginFirebase.startLoginDialog(getFragmentManager());
+            }
+        }
+    };
+
+
+
+    // get  activity results in order to get results from Authentication login
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // activty.on
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i(TAG, "Google sign in OK");
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == LoginFirebase.RC_GOOGLE_SIGNIN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                Log.i(TAG, "Google sign in OK");
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                LoginFirebase.getInstance().firebaseAuthWithGoogle(account,new ResultsCallback(){
+                    @Override
+                    public void onSuccess(String result) {
+                        // the result is an ok string
+                        Log.i(TAG, "Updating UserInterface");
+                        UpdateHeader();
+                    }
+                });
+
+                // let's start the authentication
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e);
+                Toast.makeText(this, "Google sign in failed ... retry",
+                        Toast.LENGTH_SHORT).show();
+                //  updateUI();
+                // finish();
+                // ...
+            }
+        }
+    }
     private void initUI(Bundle savedInstanceState) {
         buildFragmentsList();
 
@@ -139,8 +215,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     }
 
     private void initDrawer(Bundle savedInstanceState){
-        initHeader();
-
+       // initHeader();
+        UpdateHeader();
         mDrawerToggle = new ActionBarDrawerToggle(this, mBinding.drawerLayout,
                 mBinding.toolbar, R.string.open, R.string.close);
         mBinding.drawerLayout.addDrawerListener(mDrawerToggle);
@@ -167,6 +243,36 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             navigate(R.id.navigation_news);
         }
     }
+    /**
+     * This method update the Header, in particoular the information about the user
+     * @return
+     */
+    private void UpdateHeader(){
+        View header = mBinding.navigation.getHeaderView(0);
+        ImageView userImageView = header.findViewById(R.id.circleView);
+        TextView userNameTextView = header.findViewById(R.id.user_name_textview);
+        TextView userEmailTextView = header.findViewById(R.id.user_email_textview);
+        ImageView userBackgroundView = header.findViewById(R.id.backgroundView);
+        header.findViewById(R.id.sign_in_button).setOnClickListener(buttonListener);
+
+        if(!User.getInstance().isLogged()){
+            userImageView.setVisibility(View.INVISIBLE);
+            userNameTextView.setVisibility(View.INVISIBLE);
+            userEmailTextView.setVisibility(View.INVISIBLE);
+            userBackgroundView.setVisibility(View.INVISIBLE);
+            header.findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+        }else{
+            userImageView.setVisibility(View.VISIBLE);
+            userNameTextView.setVisibility(View.VISIBLE);
+            userEmailTextView.setVisibility(View.VISIBLE);
+            userBackgroundView.setVisibility(View.VISIBLE);
+            header.findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
+            Glide.with(this).load(User.getInstance().getImgLink()).into(userImageView);
+            userNameTextView.setText(User.getInstance().getUsername());
+            userEmailTextView.setText(User.getInstance().getEmail());
+            userBackgroundView.setImageResource(R.mipmap.aldo_giovanni_giacomo);
+        }
+    }
 
     private void initHeader() {
         View header = mBinding.navigation.getHeaderView(0);
@@ -176,6 +282,13 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         TextView userEmailTextView = header.findViewById(R.id.user_email_textview);
         ImageView userBackgroundView = header.findViewById(R.id.backgroundView);
 
+
+        if(!User.getInstance().isLogged()){
+            userImageView.setVisibility(View.INVISIBLE);
+            userNameTextView.setVisibility(View.INVISIBLE);
+            userEmailTextView.setVisibility(View.INVISIBLE);
+            userBackgroundView.setVisibility(View.INVISIBLE);
+        }
         userImageView.setImageResource(R.mipmap.fumagalli);
         userNameTextView.setText(getString(R.string.holder_user_name));
         userEmailTextView.setText(getString(R.string.holder_user_email));
