@@ -1,4 +1,4 @@
-package it.communikein.udacity_municipality.service;
+package it.communikein.municipalia.service;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,8 +13,8 @@ import android.support.v4.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import it.communikein.udacity_municipality.R;
-import it.communikein.udacity_municipality.ui.MainActivity;
+import it.communikein.municipalia.R;
+import it.communikein.municipalia.ui.MainActivity;
 
 public class MunicipaliaFirebaseMessagingService extends FirebaseMessagingService {
 

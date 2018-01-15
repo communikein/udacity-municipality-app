@@ -1,4 +1,4 @@
-package it.communikein.udacity_municipality.service;
+package it.communikein.municipalia.service;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
