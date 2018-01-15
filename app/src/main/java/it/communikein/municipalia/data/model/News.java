@@ -1,9 +1,12 @@
 package it.communikein.municipalia.data.model;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.util.Date;
 import java.util.Map;
+
+import it.communikein.municipalia.R;
 
 public class News {
 
@@ -72,6 +75,10 @@ public class News {
         return image;
     }
 
+    public int getImageDefault() {
+        return R.mipmap.news_background;
+    }
+
     public void setImage(String image) {
         this.image = image;
     }
@@ -84,6 +91,11 @@ public class News {
         this.timestamp = timestamp;
     }
 
+
+    public boolean areFieldsSet() {
+        return !(TextUtils.isEmpty(getTitle()) || TextUtils.isEmpty(getDescription())
+                || getTimestamp() == 0);
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -99,7 +111,7 @@ public class News {
         News news = (News) obj;
         return news.getTitle().equals(this.getTitle()) &&
                 news.getDescription().equals(this.getDescription()) &&
-                news.getImage().equals(this.getImage()) &&
+                (news.getImage() == null ? "" : news.getImage()).equals((this.getImage() == null ? "" : this.getImage())) &&
                 news.getTimestamp() == this.getTimestamp();
     }
 }

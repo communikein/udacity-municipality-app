@@ -26,14 +26,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
     private static final int VIEW_TYPE_BIG = 0;
     private static final int VIEW_TYPE_NORMAL = 1;
 
-    /*
-     * Flag to determine if we want to use a separate view for the list item that represents
-     * today. This flag will be true when the phone is in portrait mode and false when the phone
-     * is in landscape. This flag will be set in the constructor of the adapter by accessing
-     * boolean resources.
-     */
-    private boolean mUseTodayLayout;
-
     private ArrayList<News> mList;
     private Context mContext;
 
@@ -102,8 +94,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
 
     public void setList(final ArrayList<News> newList) {
+        ArrayList<News> tempList = new ArrayList<>();
+        for(News news : newList){
+            if (news.areFieldsSet())
+                tempList.add(news);
+        }
+
         if (mList == null) {
-            mList = newList;
+            mList = tempList;
             notifyItemRangeInserted(0, mList.size());
         }
         else {
@@ -115,22 +113,22 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
                 @Override
                 public int getNewListSize() {
-                    return newList.size();
+                    return tempList.size();
                 }
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    return mList.get(oldItemPosition).equals(newList.get(newItemPosition));
+                    return mList.get(oldItemPosition).equals(tempList.get(newItemPosition));
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    News newItem = newList.get(newItemPosition);
+                    News newItem = tempList.get(newItemPosition);
                     News oldItem = mList.get(oldItemPosition);
                     return oldItem.displayEquals(newItem);
                 }
             });
-            mList = newList;
+            mList = tempList;
             result.dispatchUpdatesTo(this);
         }
     }
@@ -184,18 +182,28 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
                 mBinding.timestampTextview.setText(friendly_date);
                 mBinding.titleTextview.setText(news.getTitle());
 
-                Glide.with(mBinding.getRoot())
-                        .load(news.getImage())
-                        .into(mBinding.iconImageview);
+                if (news.getImage() != null) {
+                    Glide.with(mBinding.getRoot())
+                            .load(news.getImage())
+                            .into(mBinding.iconImageview);
+                }
+                else {
+                    mBinding.iconImageview.setImageResource(news.getImageDefault());
+                }
             }
             else {
                 mBindingBig.setNews(news);
                 mBindingBig.timestampTextview.setText(friendly_date);
                 mBindingBig.titleTextview.setText(news.getTitle());
 
-                Glide.with(mBindingBig.getRoot())
-                        .load(news.getImage())
-                        .into(mBindingBig.iconImageview);
+                if (news.getImage() != null) {
+                    Glide.with(mBindingBig.getRoot())
+                            .load(news.getImage())
+                            .into(mBindingBig.iconImageview);
+                }
+                else {
+                    mBindingBig.iconImageview.setImageResource(news.getImageDefault());
+                }
             }
         }
     }
