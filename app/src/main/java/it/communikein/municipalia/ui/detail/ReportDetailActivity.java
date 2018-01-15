@@ -1,7 +1,6 @@
 package it.communikein.municipalia.ui.detail;
 
 import android.databinding.DataBindingUtil;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

@@ -1,7 +1,6 @@
 package it.communikein.municipalia.ui.list.news;
 
 
-import android.app.IntentService;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;

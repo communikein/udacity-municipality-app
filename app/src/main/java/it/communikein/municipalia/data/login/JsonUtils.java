@@ -53,7 +53,7 @@ public class JsonUtils {
      * @param json the Json String containing User data.
      * @return the User instance is taken from singleton
      */
-    public static User setUserFromJson(User user, String json) throws JSONException {
+    public static void setUserFromJson(User user, String json) throws JSONException {
         JSONObject mainObject = new JSONObject(json);
 
         try {
@@ -76,7 +76,5 @@ public class JsonUtils {
             e.printStackTrace();
             throw e;
         }
-
-        return user;
     }
 }

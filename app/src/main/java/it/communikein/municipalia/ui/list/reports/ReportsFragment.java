@@ -22,16 +22,12 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import it.communikein.municipalia.R;
-import it.communikein.municipalia.data.model.News;
 import it.communikein.municipalia.data.model.Report;
 import it.communikein.municipalia.databinding.SimpleListBinding;
 import it.communikein.municipalia.ui.MainActivity;
 import it.communikein.municipalia.ui.detail.ReportDetailActivity;
-import it.communikein.municipalia.ui.list.news.NewsAdapter;
 import it.communikein.municipalia.ui.list.news.NewsFragment;
-import it.communikein.municipalia.viewmodel.NewsViewModel;
 import it.communikein.municipalia.viewmodel.ReportsViewModel;
-import it.communikein.municipalia.viewmodel.factory.NewsViewModelFactory;
 import it.communikein.municipalia.viewmodel.factory.ReportsViewModelFactory;
 
 /**

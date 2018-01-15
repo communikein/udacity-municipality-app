@@ -58,12 +58,10 @@ public class DialogLogIn extends DialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(inflater.inflate(R.layout.dialog_signin, null))
                 // Add action buttons
-                .setPositiveButton(R.string.action_signin, (dialog, id) -> {
-                    mListener.onDialogPositiveClick(this);
-                })
-                .setNegativeButton(R.string.action_cancel, (dialog, id) -> {
-                    mListener.onDialogNegativeClick(this);
-                });
+                .setPositiveButton(R.string.action_signin,
+                        (dialog, id) -> mListener.onDialogPositiveClick(this))
+                .setNegativeButton(R.string.action_cancel,
+                        (dialog, id) -> mListener.onDialogNegativeClick(this));
 
         return builder.create();
     }

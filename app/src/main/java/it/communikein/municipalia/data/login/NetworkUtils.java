@@ -10,7 +10,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -113,7 +112,7 @@ public class NetworkUtils {
     public static void getUserFromServerHttp(Context context, String url,String token,final ResultsCallback callback) {
 
         StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
-            if (!response.equals(null)) {
+            if (response != null) {
                 Log.d(TAG, response);
                 callback.onSuccess(response);
             } else {
