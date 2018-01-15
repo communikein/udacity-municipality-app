@@ -62,17 +62,18 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
 
     implementation 'pub.devrel:easypermissions:1.0.1'
+    implementation 'com.google.code.gson:gson:2.8.2'
+
+    /*For Firebase auth */
+    implementation 'com.google.firebase:firebase-auth:11.8.0'
+    implementation 'com.google.firebase:firebase-config:11.8.0'
+    implementation 'com.google.android.gms:play-services-auth:11.8.0'
+
+    compile 'com.android.volley:volley:1.1.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
-    /*For Firebase auth */
-
-    compile 'com.google.firebase:firebase-auth:11.8.0'
-    compile'com.google.firebase:firebase-config:11.8.0'
-    compile 'com.google.android.gms:play-services-auth:11.8.0'
-    compile 'com.android.volley:volley:1.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

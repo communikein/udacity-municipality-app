@@ -29,62 +29,64 @@ public class JsonUtils {
     /**
      * Fill out the User object .
      * @param userId  the User Id.
-     * @param name the name of the user retrived from the server.
-     * @param email the email of the user retrived from the server
-     * @param type the type of the user if Citizien or not
-     * @return nothing becuase the User is implemented with a singleton class
+     * @param name the name of the user retrieved from the server.
+     * @param email the email of the user retrieved from the server
+     * @param type the type of the user if Citizen or not
+     * @return nothing because the User is implemented with a singleton class
      */
-    private static void writeNewUser(String userId, String name, String email,User.typeOfUser type) {
+    private static void writeNewUser(String userId, String name, String email, User.typeOfUser type) {
         User user = User.getInstance();
         user.setEmail(email);
         user.setType(type);
         user.setLogged(true);
         user.setUsername(name);
         user.setUid(userId);
-        Log.d(TAG, "setting User with" + user.getEmail() + " "+ user.getUid()+" " + user.getUsername() );
+
+        Log.d(TAG, "setting User with" + user.getEmail() + " " + user.getUid() + " " + user.getUsername() );
     }
+
     /**
      * make a JsonObject with User data specified
-     * @param name the name of the user retrived from the server.
-     * @param email the email of the user retrived from the server
-     * @param roleOfUser the type of the user if Citizien or not
-     * @param uid the user id uniwie for each user
-     * @return JSONObject wready to be sent to the server
+     * @param name the name of the user retrieved from the server.
+     * @param email the email of the user retrieved from the server
+     * @param roleOfUser the type of the user if Citizen or not
+     * @param uid the user id unique for each user
+     * @return JSONObject ready to be sent to the server
      */
     public static JSONObject userToJson (String name, String email, String uid, User.typeOfUser roleOfUser){
-
         JSONObject mainObject = new JSONObject();
-        try {
-            mainObject.put(NAME,name);
-            mainObject.put(EMAIL,email);
-            mainObject.put(UID,uid);
-            if(roleOfUser==User.typeOfUser.Citizien)
-                mainObject.put(ROLE,1);
 
+        try {
+            mainObject.put(NAME, name);
+            mainObject.put(EMAIL, email);
+            mainObject.put(UID, uid);
+
+            if(roleOfUser == User.typeOfUser.Citizen)
+                mainObject.put(ROLE, 1);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
-            return mainObject;
+
+        return mainObject;
     }
+
     /**
      * Set the user attributes starting from a JsonObject string
      * @param json the Json String containing User data.
-     * @return the User istance is taken from singleton
+     * @return the User instance is taken from singleton
      */
-
     public static void setUserFromJson(String json) throws JSONException {
-
         JSONObject mainObject = new JSONObject(json);
-        JSONObject uniObject = null;
         User.typeOfUser type;
+
         try {
             String email  = mainObject.getString("email");
             String userId = mainObject.getString("uid");
             String name = mainObject.getString("name");
             int role = Integer.parseInt(mainObject.getString("role"));
-            if(role ==1)
-                type = User.typeOfUser.Citizien;
+            if(role == 1)
+                type = User.typeOfUser.Citizen;
             else
                 type = User.typeOfUser.Municipality_Worker;
 
@@ -93,6 +95,5 @@ public class JsonUtils {
             e.printStackTrace();
             throw e;
         }
-
     }
 }

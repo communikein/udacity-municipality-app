@@ -54,4 +54,6 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="time">ore</string>
+    <string name="action_signin">Sign-In</string>
+    <string name="action_cancel">Cancel</string>
 </resources>

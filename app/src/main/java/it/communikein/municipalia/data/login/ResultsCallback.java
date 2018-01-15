@@ -5,7 +5,7 @@ package it.communikein.municipalia.data.login;
  *
  */
 /*! \class ResultsCallback
-    \brief The interface to implement a callback to retrieve data from listner
+    \brief The interface to implement a callback to retrieve data from listener
 */
 public interface ResultsCallback {
     void onSuccess(String result);

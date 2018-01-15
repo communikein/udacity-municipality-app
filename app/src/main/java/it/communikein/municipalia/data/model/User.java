@@ -1,13 +1,11 @@
 package it.communikein.municipalia.data.model;
 
-import android.provider.CalendarContract;
-
 public class User {
 
     public enum typeOfUser {
-        Citizien,
+        Citizen,
         Municipality_Worker
-    };
+    }
 
     private String username;
     private String email;
@@ -79,4 +77,3 @@ public class User {
     }
 
 }
-// [END blog_user_class]
