@@ -1,5 +1,8 @@
 package it.communikein.municipalia.ui;
 
+import android.app.DialogFragment;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
@@ -7,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,6 +21,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,18 +38,23 @@ import dagger.android.AndroidInjection;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import it.communikein.municipalia.R;
+import it.communikein.municipalia.data.login.DialogLogIn;
+import it.communikein.municipalia.data.login.LoginFirebase;
 import it.communikein.municipalia.databinding.ActivityMainBinding;
 import it.communikein.municipalia.ui.list.news.NewsFragment;
 import it.communikein.municipalia.ui.list.pois.PoisFragment;
 import it.communikein.municipalia.ui.list.reports.ReportsFragment;
 
 public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector,
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener, DialogLogIn.NoticeDialogListener {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
+
+    @Inject
+    LoginFirebase loginFirebase;
 
     public ActivityMainBinding mBinding;
 
@@ -62,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     private final String DRAWER_ITEM_SELECTED = "drawer-item-selected";
     private int drawerItemSelectedId = R.id.navigation_home;
 
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +97,38 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         super.onSaveInstanceState(outState);
     }
 
+
+    // get  activity results in order to get results from Authentication login
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == LoginFirebase.RC_GOOGLE_SIGNIN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                loginFirebase.firebaseAuthWithGoogle(this, account, result -> {
+                    // the result is an ok string
+                    progressDialog.cancel();
+                    updateHeader();
+                });
+
+                // let's start the authentication
+            } catch (ApiException e) {
+                progressDialog.cancel();
+
+                // Google Sign In failed, update UI appropriately
+                Snackbar.make(mBinding.tabContainer,
+                        "Google sign in failed ... retry",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     private void initUI(Bundle savedInstanceState) {
+        initProgressDialog();
+
         buildFragmentsList();
 
         Window w = getWindow();
@@ -94,6 +143,12 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         setSupportActionBar(mBinding.toolbar);
 
         initDrawer(savedInstanceState);
+    }
+
+    private void initProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(R.string.signin_in);
+        progressDialog.setCancelable(false);
     }
 
     private void buildFragmentsList() {
@@ -168,18 +223,61 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         }
     }
 
-    private void initHeader() {
-        View header = mBinding.navigation.getHeaderView(0);
+    private void initHeader(){
+        // If the user is not Logged sign in Anonymously
+        // if yes update the interface
+        if(loginFirebase.isUserAlreadyLoggedIn(this)){
+            if (loginFirebase.user.isLogged())
+                updateHeader();
+            else
+                loginFirebase.askUserToServer(this, result -> updateHeader());
+        }
+    }
 
+    /**
+     * This method update the Header, in particular the information about the user
+     * @return
+     */
+    private void updateHeader(){
+        View header = mBinding.navigation.getHeaderView(0);
         ImageView userImageView = header.findViewById(R.id.circleView);
         TextView userNameTextView = header.findViewById(R.id.user_name_textview);
         TextView userEmailTextView = header.findViewById(R.id.user_email_textview);
         ImageView userBackgroundView = header.findViewById(R.id.backgroundView);
+        header.findViewById(R.id.sign_in_button).setOnClickListener(v -> {
+            DialogLogIn dialog = new DialogLogIn();
+            dialog.show(getFragmentManager(), "LoginDialog");
+        });
 
-        userImageView.setImageResource(R.mipmap.fumagalli);
-        userNameTextView.setText(getString(R.string.holder_user_name));
-        userEmailTextView.setText(getString(R.string.holder_user_email));
-        userBackgroundView.setImageResource(R.mipmap.aldo_giovanni_giacomo);
+        if(!loginFirebase.user.isLogged()){
+            userImageView.setVisibility(View.INVISIBLE);
+            userNameTextView.setVisibility(View.INVISIBLE);
+            userEmailTextView.setVisibility(View.INVISIBLE);
+            userBackgroundView.setVisibility(View.INVISIBLE);
+            header.findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+        }else{
+            userImageView.setVisibility(View.VISIBLE);
+            userNameTextView.setVisibility(View.VISIBLE);
+            userEmailTextView.setVisibility(View.VISIBLE);
+            userBackgroundView.setVisibility(View.VISIBLE);
+            header.findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
+
+            Glide.with(this).load(loginFirebase.user.getImageUrl()).into(userImageView);
+            userNameTextView.setText(loginFirebase.user.getUsername());
+            userEmailTextView.setText(loginFirebase.user.getEmail());
+            userBackgroundView.setImageResource(R.mipmap.aldo_giovanni_giacomo);
+        }
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        loginFirebase.signIn(this);
+        progressDialog.show();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        dialog.dismiss();
     }
 
     public void hideTabsLayout() {
@@ -211,11 +309,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     public boolean onOptionsItemSelected(MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -252,9 +346,10 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         }
     }
 
+
+
     @Override
     public DispatchingAndroidInjector<Fragment> supportFragmentInjector() {
         return dispatchingAndroidInjector;
     }
-
 }

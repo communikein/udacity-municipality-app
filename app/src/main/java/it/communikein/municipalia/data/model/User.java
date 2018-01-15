@@ -1,40 +1,42 @@
 package it.communikein.municipalia.data.model;
 
-import android.provider.CalendarContract;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class User {
 
     public enum typeOfUser {
-        Citizien,
+        Citizen,
         Municipality_Worker
-    };
+    }
 
     private String username;
     private String email;
     private typeOfUser type;
     private boolean logged;
-    private String Uid;
+    private String uid;
+    private String imageUrl;
 
-    private User() {
+    @Inject
+    public User() {
         setLogged(false);
     }
 
-    private static class SingletonHolder {
-        private static final User userInstance = new User();
-
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public static User getInstance() {
-        return SingletonHolder.userInstance;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
-
 
     public String getUsername() {
         return username;
     }
 
     public String getUid() {
-        return Uid;
+        return uid;
     }
 
     public String getEmail() {
@@ -57,8 +59,8 @@ public class User {
         this.email = email;
     }
 
-    public void setUid(String Uid) {
-        this.email = Uid;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public void setType(typeOfUser type) {
@@ -70,4 +72,3 @@ public class User {
     }
 
 }
-// [END blog_user_class]

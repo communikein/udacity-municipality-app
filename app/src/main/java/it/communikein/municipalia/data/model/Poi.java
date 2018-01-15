@@ -1,10 +1,6 @@
 package it.communikein.municipalia.data.model;
 
-
 import com.google.android.gms.maps.model.LatLng;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -16,21 +12,17 @@ public class Poi extends News {
     private double locationLat;
     private double locationLng;
 
-    public Poi(String id, String title, String description, long timestamp,
+    public Poi(String id, String title, String description, String image, long timestamp,
                double locationLat, double locationLng) {
-        super(id, title, description, null, timestamp);
+        super(id, title, description, image, timestamp);
 
         setLocationLat(locationLat);
         setLocationLng(locationLng);
     }
 
-    public Poi(JSONObject json) throws JSONException {
-        super(json);
-
-        if (json.has(ARG_LOCATION_LAT))
-            setLocationLat(json.getDouble(ARG_LOCATION_LAT));
-        if (json.has(ARG_LOCATION_LNG))
-            setLocationLng(json.getDouble(ARG_LOCATION_LNG));
+    public Poi(String id, String title, String description, long timestamp,
+               double locationLat, double locationLng) {
+        this(id, title, description, null, timestamp, locationLat, locationLng);
     }
 
     public Poi(String id, Map<String, Object> map) {
@@ -66,24 +58,6 @@ public class Poi extends News {
     public void setCoords(LatLng coords) {
         setLocationLat(coords.latitude);
         setLocationLng(coords.longitude);
-    }
-
-    public JSONObject toJSON() {
-        JSONObject obj = super.toJSON();
-
-        try {
-            obj.put(ARG_LOCATION_LAT, getLocationLat());
-            obj.put(ARG_LOCATION_LNG, getLocationLng());
-        } catch (JSONException e){
-            obj = new JSONObject();
-        }
-
-        return obj;
-    }
-
-    @Override
-    public String toString() {
-        return toJSON().toString();
     }
 
 

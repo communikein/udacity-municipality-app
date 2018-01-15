@@ -2,9 +2,6 @@ package it.communikein.municipalia.data.model;
 
 import android.support.annotation.NonNull;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Map;
 
 public class Report extends News {
@@ -21,13 +18,6 @@ public class Report extends News {
         setSubmitterId(submitterId);
     }
 
-    public Report(JSONObject json) throws JSONException {
-        super(json);
-
-        if (json.has(ARG_SUBMITTER_ID))
-            setSubmitterId(json.getString(ARG_SUBMITTER_ID));
-    }
-
     public Report(String id, Map<String, Object> map) {
         super(id, map);
 
@@ -35,29 +25,12 @@ public class Report extends News {
             setSubmitterId((String) map.get(ARG_SUBMITTER_ID));
     }
 
+
     public String getSubmitterId() {
         return this.submitterId;
     }
 
-    public void setSubmitterId(String submitterId) {
+    public void setSubmitterId(@NonNull String submitterId) {
         this.submitterId = submitterId;
-    }
-
-
-    public JSONObject toJSON() {
-        JSONObject obj = super.toJSON();
-
-        try {
-            obj.put(ARG_SUBMITTER_ID, getSubmitterId());
-        } catch (JSONException e){
-            obj = new JSONObject();
-        }
-
-        return obj;
-    }
-
-    @Override
-    public String toString() {
-        return toJSON().toString();
     }
 }

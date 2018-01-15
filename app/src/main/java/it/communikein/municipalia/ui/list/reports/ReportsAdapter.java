@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import it.communikein.municipalia.R;
+import it.communikein.municipalia.data.model.News;
 import it.communikein.municipalia.data.model.Report;
 import it.communikein.municipalia.databinding.ListItemReportBinding;
 import it.communikein.municipalia.ui.list.reports.ReportsAdapter.ReportViewHolder;
@@ -61,8 +62,14 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportViewHolder> {
     }
 
     public void setList(final ArrayList<Report> newList) {
+        ArrayList<Report> tempList = new ArrayList<>();
+        for(Report report : newList){
+            if (report.areFieldsSet())
+                tempList.add(report);
+        }
+
         if (mList == null) {
-            mList = newList;
+            mList = tempList;
             notifyItemRangeInserted(0, mList.size());
         }
         else {
@@ -74,23 +81,23 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportViewHolder> {
 
                 @Override
                 public int getNewListSize() {
-                    return newList.size();
+                    return tempList.size();
                 }
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    return mList.get(oldItemPosition).equals(newList.get(newItemPosition));
+                    return mList.get(oldItemPosition).equals(tempList.get(newItemPosition));
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    Report newItem = newList.get(newItemPosition);
+                    Report newItem = tempList.get(newItemPosition);
                     Report oldItem = mList.get(oldItemPosition);
 
                     return oldItem.displayEquals(newItem);
                 }
             });
-            mList = newList;
+            mList = tempList;
             result.dispatchUpdatesTo(this);
         }
     }
