@@ -15,6 +15,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+
 import org.json.JSONException;
 
 import javax.inject.Inject;
@@ -49,9 +51,13 @@ public class LoginFirebase {
     // the app where this class refers
     private Application app;
 
+    private static final String USER_PROFILE_URI = "USER_PROFILE_URI";
+    public User user;
+
     @Inject
-    public LoginFirebase(Application application) {
+    public LoginFirebase(Application application, User user) {
         this.app = application;
+        this.user = user;
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -65,6 +71,11 @@ public class LoginFirebase {
         mAuth = FirebaseAuth.getInstance();
     }
 
+    public FirebaseUser getFirebaseUser() {
+        if (mAuth == null) return null;
+        return mAuth.getCurrentUser();
+    }
+
     /**
      * This method revoke the access to the user and set the UserLogged attribute to flase
      * @return
@@ -74,8 +85,8 @@ public class LoginFirebase {
         mAuth.signOut();
         // Google revoke access
         mGoogleSignInClient.revokeAccess().addOnCompleteListener(activity,
-                task -> User.getInstance().setLogged(false));
-        User.getInstance().setLogged(false);
+                task -> user.setLogged(false));
+        user.setLogged(false);
     }
 
     /**
@@ -91,36 +102,45 @@ public class LoginFirebase {
     /**
      * This ask the data of the User to the server
      *
-     * @param mUser the firebase user
      * @param callback the callback where to set the result in case of success
      * @return
      */
-    private void askUserToServer(Activity activity, FirebaseUser mUser, final ResultsCallback callback) {
+    public void askUserToServer(Activity activity, final ResultsCallback callback) {
+        FirebaseUser firebaseUser = getFirebaseUser();
 
-        NetworkUtils.getServerTokenFromFirebase(mUser, token -> {
+        NetworkUtils.getServerTokenFromFirebase(firebaseUser, token -> {
             if (token != null) {
                 Log.d(TAG, "sendRequestToServer: " + token);
-                String urlOfServer = NetworkUtils.retrieveUrlOfServer(activity);
-                Log.d(TAG, "url of Server" + urlOfServer);
-                NetworkUtils.getUserFromServerHttp(app, urlOfServer, token, result -> {
-                    if (result != null) {
-                        try {
-                            JsonUtils.setUserFromJson(result);
-                            // TODO: put this in the JsonUtil .
-                            // TODO: you have to get the image url from the server not directly from Firebase
-                            User.getInstance().setImg(mUser.getPhotoUrl().toString());
-                            callback.onSuccess(result);
-                            //   updateUI();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.e(TAG, "sendRequestToServer: error on parsing Json");
+                NetworkUtils.retrieveUrlOfServer(activity, task -> {
+                    FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "retrieveUrlOfServer: Fetch succeeded");
+                        mFirebaseRemoteConfig.activateFetched();
 
-                        }
-                        Log.d(TAG, "sendRequestToServer: User" + result);
+                        String urlOfServer = mFirebaseRemoteConfig.getString(USER_PROFILE_URI);
+                        Log.d(TAG, "url of Server" + urlOfServer);
+                        NetworkUtils.getUserFromServerHttp(app, urlOfServer, token, result -> {
+                            if (result != null) {
+                                try {
+                                    JsonUtils.setUserFromJson(user, result);
+
+                                    user.setImageUrl(firebaseUser.getPhotoUrl().toString());
+                                    callback.onSuccess(result);
+                                    //   updateUI();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Log.e(TAG, "sendRequestToServer: error on parsing Json");
+
+                                }
+                                Log.d(TAG, "sendRequestToServer: User" + result);
+                            } else {
+                                Log.e(TAG, "sendRequestToServer: error user not authorized");
+                                Toast.makeText(app, "User not authorized",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     } else {
-                        Log.e(TAG, "sendRequestToServer: error user not authorized");
-                        Toast.makeText(app, "User not authorized",
-                                Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "retrieveUrlOfServer: Fetch Failed");
                     }
                 });
             } else {
@@ -139,7 +159,6 @@ public class LoginFirebase {
      * @param callback the callback where to set the result in case of success
      * @return
      */
-    // [START auth_with_google]
     public void firebaseAuthWithGoogle(Activity activity, GoogleSignInAccount acct, final ResultsCallback callback) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -148,10 +167,10 @@ public class LoginFirebase {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        askUserToServer(activity, user, result -> callback.onSuccess("USER CORRECTLY SET"));
 
-                    } else {
+                        askUserToServer(activity, result -> callback.onSuccess("USER CORRECTLY SET"));
+                    }
+                    else {
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                         Snackbar.make(
                                 activity.findViewById(R.id.tab_container),
@@ -217,12 +236,12 @@ public class LoginFirebase {
                     //  updateUI();
 
                 });
-        User.getInstance().setLogged(false);
+        user.setLogged(false);
     }
 
     // retry true if the user is already log with google otherwise return false and
     // @param true if the User is already logged with google false if not
-    public boolean VerifyAlreadyLog(Activity activity) {
+    public boolean isUserAlreadyLoggedIn(Activity activity) {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -236,6 +255,7 @@ public class LoginFirebase {
             }
 
         }
+
         signInAnonymously(activity);
         return false;
 

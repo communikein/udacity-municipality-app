@@ -1,5 +1,9 @@
 package it.communikein.municipalia.data.model;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class User {
 
     public enum typeOfUser {
@@ -11,37 +15,28 @@ public class User {
     private String email;
     private typeOfUser type;
     private boolean logged;
-    private String Uid;
-    public String ImgLink;
+    private String uid;
+    private String imageUrl;
 
-    public String getImgLink() {
-        return ImgLink;
-    }
-
-    public void setImg(String ImgLink) {
-        this.ImgLink = ImgLink;
-    }
-
-    private User() {
+    @Inject
+    public User() {
         setLogged(false);
     }
 
-    private static class SingletonHolder {
-        private static final User userInstance = new User();
-
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public static User getInstance() {
-        return SingletonHolder.userInstance;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
-
 
     public String getUsername() {
         return username;
     }
 
     public String getUid() {
-        return Uid;
+        return uid;
     }
 
     public String getEmail() {
@@ -64,8 +59,8 @@ public class User {
         this.email = email;
     }
 
-    public void setUid(String Uid) {
-        this.Uid = Uid;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public void setType(typeOfUser type) {

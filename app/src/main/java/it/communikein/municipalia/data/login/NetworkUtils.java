@@ -9,6 +9,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -34,14 +36,13 @@ import it.communikein.municipalia.BuildConfig;
 public class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
-    private static final String USER_PROFILE_URI = "USER_PROFILE_URI";
 
     /**
-     * This method retrive the url of server from FirebaseRemoteConfig
-     * @param activity  the app wehre to bind the liestner
+     * This method retrieve the url of server from FirebaseRemoteConfig
+     * @param activity the activity where to bind the listener
      * @return String the url of server
      */
-    public static String retrieveUrlOfServer(Activity activity){
+    public static void retrieveUrlOfServer(Activity activity, OnCompleteListener<Void> onCompleteListener){
         long cacheExpiration = 3600;
 
         FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -54,17 +55,9 @@ public class NetworkUtils {
             cacheExpiration = 0;
         }
         // we need to use fetch in order to use cache and retrieve URI
-        mFirebaseRemoteConfig.fetch(cacheExpiration)
-                .addOnCompleteListener(activity, task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "retrieveUrlOfServer: Fetch succed");
-                        mFirebaseRemoteConfig.activateFetched();
-                    } else {
-                        Log.e(TAG, "retrieveUrlOfServer: Fetch Failed");
-                    }
-                });
-
-        return mFirebaseRemoteConfig.getString(USER_PROFILE_URI);
+        mFirebaseRemoteConfig
+                .fetch(cacheExpiration)
+                .addOnCompleteListener(activity, onCompleteListener);
     }
 
     /**

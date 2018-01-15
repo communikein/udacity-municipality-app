@@ -11,6 +11,7 @@ import dagger.Module;
 import dagger.Provides;
 import it.communikein.municipalia.data.ComunicappRepository;
 import it.communikein.municipalia.data.login.LoginFirebase;
+import it.communikein.municipalia.data.model.User;
 
 @Module
 public class ComunicappModule {
@@ -26,8 +27,13 @@ public class ComunicappModule {
     }
 
     @Singleton @Provides
-    LoginFirebase provideLogin(Application application) {
-        return new LoginFirebase(application);
+    LoginFirebase provideLogin(Application application, User user) {
+        return new LoginFirebase(application, user);
+    }
+
+    @Singleton @Provides
+    User provideUser() {
+        return new User();
     }
 
 }

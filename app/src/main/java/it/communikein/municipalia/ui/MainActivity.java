@@ -1,6 +1,7 @@
 package it.communikein.municipalia.ui;
 
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
@@ -9,11 +10,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -39,7 +40,6 @@ import dagger.android.support.HasSupportFragmentInjector;
 import it.communikein.municipalia.R;
 import it.communikein.municipalia.data.login.DialogLogIn;
 import it.communikein.municipalia.data.login.LoginFirebase;
-import it.communikein.municipalia.data.model.User;
 import it.communikein.municipalia.databinding.ActivityMainBinding;
 import it.communikein.municipalia.ui.list.news.NewsFragment;
 import it.communikein.municipalia.ui.list.pois.PoisFragment;
@@ -48,7 +48,7 @@ import it.communikein.municipalia.ui.list.reports.ReportsFragment;
 public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector,
         NavigationView.OnNavigationItemSelectedListener, DialogLogIn.NoticeDialogListener {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     private final String DRAWER_ITEM_SELECTED = "drawer-item-selected";
     private int drawerItemSelectedId = R.id.navigation_home;
 
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +89,6 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         initUI(savedInstanceState);
-
-        // If the user is not Logged sign in Anonymously
-        // if yes update the interface
-        if(loginFirebase.VerifyAlreadyLog(this)){
-            updateHeader();
-        }
     }
 
     @Override
@@ -105,35 +101,34 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     // get  activity results in order to get results from Authentication login
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // activity.on
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i(TAG, "Google sign in OK");
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+
         if (requestCode == LoginFirebase.RC_GOOGLE_SIGNIN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                Log.i(TAG, "Google sign in OK");
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 loginFirebase.firebaseAuthWithGoogle(this, account, result -> {
                     // the result is an ok string
-                    Log.i(TAG, "Updating UserInterface");
+                    progressDialog.cancel();
                     updateHeader();
                 });
 
                 // let's start the authentication
             } catch (ApiException e) {
+                progressDialog.cancel();
+
                 // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
-                Toast.makeText(this, "Google sign in failed ... retry",
+                Snackbar.make(mBinding.tabContainer,
+                        "Google sign in failed ... retry",
                         Toast.LENGTH_SHORT).show();
-                //  updateUI();
-                // finish();
-                // ...
             }
         }
     }
+
     private void initUI(Bundle savedInstanceState) {
+        initProgressDialog();
+
         buildFragmentsList();
 
         Window w = getWindow();
@@ -148,6 +143,12 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         setSupportActionBar(mBinding.toolbar);
 
         initDrawer(savedInstanceState);
+    }
+
+    private void initProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(R.string.signin_in);
+        progressDialog.setCancelable(false);
     }
 
     private void buildFragmentsList() {
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
     }
 
     private void initDrawer(Bundle savedInstanceState){
-        updateHeader();
+        initHeader();
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mBinding.drawerLayout,
                 mBinding.toolbar, R.string.open, R.string.close);
@@ -222,6 +223,17 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         }
     }
 
+    private void initHeader(){
+        // If the user is not Logged sign in Anonymously
+        // if yes update the interface
+        if(loginFirebase.isUserAlreadyLoggedIn(this)){
+            if (loginFirebase.user.isLogged())
+                updateHeader();
+            else
+                loginFirebase.askUserToServer(this, result -> updateHeader());
+        }
+    }
+
     /**
      * This method update the Header, in particular the information about the user
      * @return
@@ -233,12 +245,11 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         TextView userEmailTextView = header.findViewById(R.id.user_email_textview);
         ImageView userBackgroundView = header.findViewById(R.id.backgroundView);
         header.findViewById(R.id.sign_in_button).setOnClickListener(v -> {
-            Log.i("Listener", "Google sign in pushed");
             DialogLogIn dialog = new DialogLogIn();
             dialog.show(getFragmentManager(), "LoginDialog");
         });
 
-        if(!User.getInstance().isLogged()){
+        if(!loginFirebase.user.isLogged()){
             userImageView.setVisibility(View.INVISIBLE);
             userNameTextView.setVisibility(View.INVISIBLE);
             userEmailTextView.setVisibility(View.INVISIBLE);
@@ -251,11 +262,22 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             userBackgroundView.setVisibility(View.VISIBLE);
             header.findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
 
-            Glide.with(this).load(User.getInstance().getImgLink()).into(userImageView);
-            userNameTextView.setText(User.getInstance().getUsername());
-            userEmailTextView.setText(User.getInstance().getEmail());
+            Glide.with(this).load(loginFirebase.user.getImageUrl()).into(userImageView);
+            userNameTextView.setText(loginFirebase.user.getUsername());
+            userEmailTextView.setText(loginFirebase.user.getEmail());
             userBackgroundView.setImageResource(R.mipmap.aldo_giovanni_giacomo);
         }
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        loginFirebase.signIn(this);
+        progressDialog.show();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        dialog.dismiss();
     }
 
     public void hideTabsLayout() {
@@ -328,18 +350,10 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         }
     }
 
+
+
     @Override
     public DispatchingAndroidInjector<Fragment> supportFragmentInjector() {
         return dispatchingAndroidInjector;
-    }
-
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
-        loginFirebase.signIn(this);
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-        dialog.dismiss();
     }
 }

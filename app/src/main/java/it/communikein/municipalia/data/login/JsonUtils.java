@@ -1,13 +1,9 @@
 package it.communikein.municipalia.data.login;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import it.communikein.municipalia.data.model.User;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by Francesco Reale on 10/01/2018.
@@ -25,25 +21,6 @@ public class JsonUtils {
     private static final String EMAIL = "email";
     private static final String UID = "uid";
     private static final String ROLE = "role";
-
-    /**
-     * Fill out the User object .
-     * @param userId  the User Id.
-     * @param name the name of the user retrieved from the server.
-     * @param email the email of the user retrieved from the server
-     * @param type the type of the user if Citizen or not
-     * @return nothing because the User is implemented with a singleton class
-     */
-    private static void writeNewUser(String userId, String name, String email, User.typeOfUser type) {
-        User user = User.getInstance();
-        user.setEmail(email);
-        user.setType(type);
-        user.setLogged(true);
-        user.setUsername(name);
-        user.setUid(userId);
-
-        Log.d(TAG, "setting User with" + user.getEmail() + " " + user.getUid() + " " + user.getUsername() );
-    }
 
     /**
      * make a JsonObject with User data specified
@@ -76,11 +53,11 @@ public class JsonUtils {
      * @param json the Json String containing User data.
      * @return the User instance is taken from singleton
      */
-    public static void setUserFromJson(String json) throws JSONException {
+    public static User setUserFromJson(User user, String json) throws JSONException {
         JSONObject mainObject = new JSONObject(json);
-        User.typeOfUser type;
 
         try {
+            User.typeOfUser type;
             String email  = mainObject.getString("email");
             String userId = mainObject.getString("uid");
             String name = mainObject.getString("name");
@@ -90,10 +67,16 @@ public class JsonUtils {
             else
                 type = User.typeOfUser.Municipality_Worker;
 
-            writeNewUser(userId,name,email,type);
+            user.setEmail(email);
+            user.setType(type);
+            user.setLogged(true);
+            user.setUsername(name);
+            user.setUid(userId);
         } catch (JSONException e) {
             e.printStackTrace();
             throw e;
         }
+
+        return user;
     }
 }
