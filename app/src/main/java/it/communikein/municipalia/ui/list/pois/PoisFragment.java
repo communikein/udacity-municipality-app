@@ -1,6 +1,7 @@
 package it.communikein.municipalia.ui.list.pois;
 
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -23,6 +24,7 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import it.communikein.municipalia.R;
+import it.communikein.municipalia.data.model.Poi;
 import it.communikein.municipalia.databinding.FragmentPoisBinding;
 import it.communikein.municipalia.ui.MainActivity;
 import it.communikein.municipalia.ui.list.news.NewsFragment;
@@ -62,6 +64,10 @@ public class PoisFragment extends Fragment {
         super.onAttach(context);
     }
 
+    public PoisViewModel getViewModel() {
+        return mViewModel;
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -93,6 +99,10 @@ public class PoisFragment extends Fragment {
         mViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(PoisViewModel.class);
+
+        mViewModel.getObservableAllPois().observe(this, list -> {
+
+        });
     }
 
     private void initViewPager() {
@@ -129,10 +139,7 @@ public class PoisFragment extends Fragment {
             Adapter adapter = new Adapter(getChildFragmentManager());
 
             PoisMapFragment poisMapFragment = new PoisMapFragment();
-            poisMapFragment.setViewModel(mViewModel);
-
             PoisListFragment poisListFragment = new PoisListFragment();
-            poisListFragment.setViewModel(mViewModel);
 
             adapter.addFragment(poisMapFragment, FRAGMENT_MAP_TITLE);
             adapter.addFragment(poisListFragment, FRAGMENT_LIST_TITLE);

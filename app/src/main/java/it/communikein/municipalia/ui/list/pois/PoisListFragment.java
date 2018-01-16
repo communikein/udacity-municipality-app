@@ -21,9 +21,7 @@ import it.communikein.municipalia.databinding.SimpleListBinding;
 import it.communikein.municipalia.ui.detail.PoiDetailActivity;
 import it.communikein.municipalia.viewmodel.PoisViewModel;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class PoisListFragment extends Fragment implements PoisListAdapter.OnListItemClickListener {
 
     public static final String LOG_TAG = PoisListFragment.class.getSimpleName();
@@ -32,8 +30,6 @@ public class PoisListFragment extends Fragment implements PoisListAdapter.OnList
 
     /* Create a new BookletAdapter. It will be responsible for displaying the list's items */
     private PoisListAdapter mAdapter;
-
-    private PoisViewModel mViewModel;
 
 
     @Override
@@ -75,18 +71,24 @@ public class PoisListFragment extends Fragment implements PoisListAdapter.OnList
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mBinding.listRecyclerview.setAdapter(mAdapter);
 
-        mViewModel.getObservableAllPois().observe(this, list -> {
-            if (list != null) {
-                Log.d(LOG_TAG, "New data received. Size: " + list.size());
-                mAdapter.setList((ArrayList<Poi>) list);
-            }
-        });
+        if (getParentViewModel() != null) {
+            getParentViewModel().getObservableAllPois().observe(this, list -> {
+                if (list != null) {
+                    Log.d(LOG_TAG, "New data received. Size: " + list.size());
+                    mAdapter.setList((ArrayList<Poi>) list);
+                }
+            });
+
+        }
 
         mBinding.fab.setVisibility(View.GONE);
     }
 
-    public void setViewModel(PoisViewModel viewModel) {
-        this.mViewModel = viewModel;
+    private PoisViewModel getParentViewModel() {
+        if (getParentFragment() != null)
+            return ((PoisFragment) getParentFragment()).getViewModel();
+        else
+            return null;
     }
 
     @Override

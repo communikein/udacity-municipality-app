@@ -27,9 +27,7 @@ import it.communikein.municipalia.databinding.FragmentPoisMapBinding;
 import it.communikein.municipalia.R;
 import it.communikein.municipalia.viewmodel.PoisViewModel;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class PoisMapFragment extends Fragment implements OnMapReadyCallback {
 
     public static final String LOG_TAG = PoisMapFragment.class.getSimpleName();
@@ -42,11 +40,9 @@ public class PoisMapFragment extends Fragment implements OnMapReadyCallback {
     private static final LatLng bergamo = new LatLng(45.6983, 9.6773);
     private static final LatLng rome = new LatLng(41.9028, 12.4964);
 
-    private PoisViewModel mViewModel;
-
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         /* Inflate the layout for this fragment */
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_pois_map, container, false);
@@ -56,27 +52,35 @@ public class PoisMapFragment extends Fragment implements OnMapReadyCallback {
         return mBinding.getRoot();
     }
 
-    public void setViewModel(PoisViewModel viewModel) {
-        this.mViewModel = viewModel;
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViewModel.getObservableAllPois().observe(this, list -> {
-            if (list != null) {
-                Log.d(LOG_TAG, "New data received. Size: " + list.size());
-                updateMap(list);
-            }
-        });
+        if (getParentViewModel() != null) {
+            getParentViewModel().getObservableAllPois().observe(this, list -> {
+                if (list != null) {
+                    Log.d(LOG_TAG, "New data received. Size: " + list.size());
+                    updateMap(list);
+                }
+            });
+
+        }
+    }
+
+    private PoisViewModel getParentViewModel() {
+        if (getParentFragment() != null)
+            return ((PoisFragment) getParentFragment()).getViewModel();
+        else
+            return null;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
 
-        updateMap(mViewModel.getObservableAllPois().getValue());
+        if (getParentViewModel() != null) {
+            updateMap(getParentViewModel().getObservableAllPois().getValue());
+        }
     }
 
     private void initMap(Bundle savedInstanceState) {
