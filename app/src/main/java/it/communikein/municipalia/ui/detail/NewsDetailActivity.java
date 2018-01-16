@@ -81,7 +81,15 @@ public class NewsDetailActivity extends AppCompatActivity implements HasActivity
                     mBinding.titleTextview.setText(news.getTitle());
                     mBinding.descriptionTextview.setText(news.getDescription());
                     mBinding.timestampTextview.setText(friendly_date);
-                    Glide.with(this).load(news.getImage()).into(mBinding.image);
+
+                    if (news.getImage() != null) {
+                        Glide.with(mBinding.getRoot())
+                                .load(news.getImage())
+                                .into(mBinding.image);
+                    }
+                    else {
+                        mBinding.image.setImageResource(news.getImageDefault());
+                    }
                 }
             });
         }
